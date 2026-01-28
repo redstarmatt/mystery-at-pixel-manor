@@ -4019,7 +4019,9 @@ function drawHotel() {
   ctx.fillStyle = 'rgba(0,0,0,0.05)';
   ctx.fillRect(906, 50, 5, 170);
 
-  // === Potted tropical plants ===
+  // === Potted tropical plants (animated leaf sway) ===
+  const _hPlantT = window._t || 0;
+  const _hpSway = Math.sin(_hPlantT * 0.8) * 3 + Math.sin(_hPlantT * 1.5) * 1.5;
   // Left large plant
   const pot1 = ctx.createLinearGradient(12, 340, 55, 340);
   pot1.addColorStop(0, '#b06030');
@@ -4033,33 +4035,33 @@ function drawHotel() {
   ctx.fillRect(10, 340, 50, 7);
   ctx.fillStyle = '#4a3020';
   ctx.beginPath(); ctx.ellipse(35, 343, 22, 5, 0, 0, Math.PI * 2); ctx.fill();
-  // Leaves
+  // Leaves (animated sway)
   ctx.fillStyle = '#228B22';
   ctx.beginPath();
-  ctx.moveTo(35, 338); ctx.bezierCurveTo(10, 310, 0, 280, 8, 260);
-  ctx.bezierCurveTo(5, 285, 18, 310, 35, 338);
+  ctx.moveTo(35, 338); ctx.bezierCurveTo(10+_hpSway*0.3, 310, 0+_hpSway*0.6, 280, 8+_hpSway, 260);
+  ctx.bezierCurveTo(5+_hpSway*0.6, 285, 18+_hpSway*0.3, 310, 35, 338);
   ctx.fill();
   ctx.fillStyle = '#1e7a1e';
   ctx.beginPath();
-  ctx.moveTo(35, 338); ctx.bezierCurveTo(55, 305, 68, 278, 62, 255);
-  ctx.bezierCurveTo(62, 282, 52, 308, 35, 338);
+  ctx.moveTo(35, 338); ctx.bezierCurveTo(55+_hpSway*0.2, 305, 68+_hpSway*0.5, 278, 62+_hpSway*0.8, 255);
+  ctx.bezierCurveTo(62+_hpSway*0.5, 282, 52+_hpSway*0.2, 308, 35, 338);
   ctx.fill();
   ctx.fillStyle = '#2a9a2a';
   ctx.beginPath();
-  ctx.moveTo(35, 338); ctx.bezierCurveTo(30, 300, 35, 265, 40, 248);
-  ctx.bezierCurveTo(38, 270, 38, 300, 35, 338);
+  ctx.moveTo(35, 338); ctx.bezierCurveTo(30+_hpSway*0.2, 300, 35+_hpSway*0.4, 265, 40+_hpSway*0.6, 248);
+  ctx.bezierCurveTo(38+_hpSway*0.4, 270, 38+_hpSway*0.2, 300, 35, 338);
   ctx.fill();
   ctx.fillStyle = '#30a830';
   ctx.beginPath();
-  ctx.moveTo(35, 338); ctx.bezierCurveTo(50, 320, 60, 300, 55, 285);
-  ctx.bezierCurveTo(52, 304, 45, 320, 35, 338);
+  ctx.moveTo(35, 338); ctx.bezierCurveTo(50+_hpSway*0.2, 320, 60+_hpSway*0.4, 300, 55+_hpSway*0.7, 285);
+  ctx.bezierCurveTo(52+_hpSway*0.4, 304, 45+_hpSway*0.2, 320, 35, 338);
   ctx.fill();
   // Leaf veins
   ctx.strokeStyle = 'rgba(0,60,0,0.15)';
   ctx.lineWidth = 0.5;
-  ctx.beginPath(); ctx.moveTo(35, 338); ctx.lineTo(8, 260); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(35, 338); ctx.lineTo(62, 255); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(35, 338); ctx.lineTo(40, 248); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(35, 338); ctx.lineTo(8+_hpSway, 260); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(35, 338); ctx.lineTo(62+_hpSway*0.8, 255); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(35, 338); ctx.lineTo(40+_hpSway*0.6, 248); ctx.stroke();
   ctx.fillStyle = 'rgba(0,0,0,0.08)';
   ctx.beginPath(); ctx.ellipse(35, 378, 25, 4, 0, 0, Math.PI * 2); ctx.fill();
 
@@ -4072,20 +4074,21 @@ function drawHotel() {
   ctx.fillRect(583, 346, 32, 6);
   ctx.fillStyle = '#3a2418';
   ctx.beginPath(); ctx.ellipse(598, 349, 14, 4, 0, 0, Math.PI * 2); ctx.fill();
+  const _hpSway2 = Math.sin(_hPlantT * 0.9 + 1.5) * 2.5 + Math.sin(_hPlantT * 1.6 + 0.8) * 1;
   ctx.fillStyle = '#228B22';
   ctx.beginPath();
-  ctx.moveTo(598, 344); ctx.bezierCurveTo(585, 320, 578, 295, 582, 280);
-  ctx.bezierCurveTo(582, 300, 588, 322, 598, 344);
+  ctx.moveTo(598, 344); ctx.bezierCurveTo(585+_hpSway2*0.3, 320, 578+_hpSway2*0.6, 295, 582+_hpSway2, 280);
+  ctx.bezierCurveTo(582+_hpSway2*0.6, 300, 588+_hpSway2*0.3, 322, 598, 344);
   ctx.fill();
   ctx.fillStyle = '#1e7a1e';
   ctx.beginPath();
-  ctx.moveTo(598, 344); ctx.bezierCurveTo(610, 318, 618, 298, 614, 282);
-  ctx.bezierCurveTo(612, 302, 605, 322, 598, 344);
+  ctx.moveTo(598, 344); ctx.bezierCurveTo(610+_hpSway2*0.2, 318, 618+_hpSway2*0.5, 298, 614+_hpSway2*0.8, 282);
+  ctx.bezierCurveTo(612+_hpSway2*0.5, 302, 605+_hpSway2*0.2, 322, 598, 344);
   ctx.fill();
   ctx.fillStyle = '#2a9a2a';
   ctx.beginPath();
-  ctx.moveTo(598, 344); ctx.bezierCurveTo(596, 315, 600, 290, 602, 275);
-  ctx.bezierCurveTo(600, 295, 599, 318, 598, 344);
+  ctx.moveTo(598, 344); ctx.bezierCurveTo(596+_hpSway2*0.2, 315, 600+_hpSway2*0.4, 290, 602+_hpSway2*0.6, 275);
+  ctx.bezierCurveTo(600+_hpSway2*0.4, 295, 599+_hpSway2*0.2, 318, 598, 344);
   ctx.fill();
 
   // === Luggage near desk ===
