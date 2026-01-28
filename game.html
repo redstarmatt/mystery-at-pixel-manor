@@ -2393,6 +2393,22 @@ function enhanceScene(type) {
     ctx.fillRect(0, 0, 960, 480);
     if (room === 'hotel') {
       drawBloom(480, 30, 150, 'rgba(255,240,200,0.03)', 0.03);
+    } else if (room === 'room7') {
+      // Warm window light shaft
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      const _r7Lt = window._t || 0;
+      const shaftAlpha = 0.02 + 0.008 * Math.sin(_r7Lt * 0.4);
+      ctx.fillStyle = `rgba(255,250,220,${shaftAlpha})`;
+      ctx.beginPath();
+      ctx.moveTo(375, 56);
+      ctx.lineTo(300, 480);
+      ctx.lineTo(600, 480);
+      ctx.lineTo(525, 56);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+      drawBloom(450, 150, 200, 'rgba(255,240,200,0.02)', 0.02);
     } else if (room === 'tikibar') {
       drawSmokeWisps(100, 95, 5, 'rgba(200,180,150,');
       drawSmokeWisps(860, 95, 5, 'rgba(200,180,150,');
@@ -7918,10 +7934,36 @@ function drawVilla() {
   ctx.fillStyle='rgba(100,180,220,0.5)'; ctx.beginPath(); ctx.ellipse(fnX,fnY+5,18,5,0,0,Math.PI*2); ctx.fill();
   ctx.fillStyle='#b0b0b0'; ctx.fillRect(fnX-3,fnY-15,6,22);
   ctx.fillStyle='#c0c0c0'; ctx.beginPath(); ctx.ellipse(fnX,fnY-15,6,3,0,0,Math.PI*2); ctx.fill();
+  // Animated fountain water arcs
+  const _fnT = window._t || 0;
   ctx.strokeStyle='rgba(120,200,240,0.4)'; ctx.lineWidth=1;
-  ctx.beginPath(); ctx.moveTo(fnX-2,fnY-14); ctx.bezierCurveTo(fnX-8,fnY-8,fnX-14,fnY-2,fnX-16,fnY+4); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(fnX+2,fnY-14); ctx.bezierCurveTo(fnX+8,fnY-8,fnX+14,fnY-2,fnX+16,fnY+4); ctx.stroke();
-  ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.beginPath(); ctx.arc(fnX-6,fnY+3,1.2,0,Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(fnX+8,fnY+2,1,0,Math.PI*2); ctx.fill();
+  // Left water arc (animated sway)
+  const _fnSway = Math.sin(_fnT * 1.8) * 2;
+  ctx.beginPath(); ctx.moveTo(fnX-2,fnY-14); ctx.bezierCurveTo(fnX-8+_fnSway,fnY-8,fnX-14+_fnSway*0.5,fnY-2,fnX-16,fnY+4); ctx.stroke();
+  // Right water arc
+  ctx.beginPath(); ctx.moveTo(fnX+2,fnY-14); ctx.bezierCurveTo(fnX+8-_fnSway,fnY-8,fnX+14-_fnSway*0.5,fnY-2,fnX+16,fnY+4); ctx.stroke();
+  // Animated water droplets falling from fountain
+  for (let fd = 0; fd < 6; fd++) {
+    const dropPhase = (_fnT * 2 + fd * 0.8) % 2.0;
+    const dropX = fnX + (fd % 2 === 0 ? -1 : 1) * (8 + fd * 2) + _fnSway * (1 - dropPhase * 0.5);
+    const dropY = fnY - 12 + dropPhase * 18;
+    const dropAlpha = Math.max(0, 0.5 - dropPhase * 0.2);
+    ctx.fillStyle = `rgba(180,220,250,${dropAlpha})`;
+    ctx.beginPath(); ctx.arc(dropX, dropY, 1, 0, Math.PI*2); ctx.fill();
+  }
+  // Animated water surface shimmer
+  ctx.fillStyle = `rgba(255,255,255,${0.3 + 0.15 * Math.sin(_fnT * 2)})`;
+  ctx.beginPath(); ctx.arc(fnX-6+Math.sin(_fnT)*2,fnY+3,1.2,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(fnX+8+Math.cos(_fnT*1.3)*2,fnY+2,1,0,Math.PI*2); ctx.fill();
+  // Tiny ripples in fountain basin
+  for (let fr = 0; fr < 2; fr++) {
+    const ripPhase = (_fnT * 0.6 + fr) % 2;
+    const ripR = 6 + ripPhase * 6;
+    const ripA = Math.max(0, 0.15 - ripPhase * 0.06);
+    ctx.strokeStyle = `rgba(255,255,255,${ripA})`;
+    ctx.lineWidth = 0.5;
+    ctx.beginPath(); ctx.ellipse(fnX,fnY+5,ripR,ripR*0.3,0,0,Math.PI*2); ctx.stroke();
+  }
 
   // ══════ RECORD PLAYER on side table ══════
   const rpX=760,rpY=280;
