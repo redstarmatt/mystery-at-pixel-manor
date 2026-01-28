@@ -2624,6 +2624,7 @@ function drawBeach() {
   ctx.fillStyle = 'rgba(0,0,0,0.08)';
   ctx.fillRect(795, 225, 145, 10);
   // Bus body
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.2)'; ctx.shadowBlur = 8; ctx.shadowOffsetX = 3; ctx.shadowOffsetY = 4;
   const busGrad = ctx.createLinearGradient(790, 140, 790, 220);
   busGrad.addColorStop(0, '#ff6699');
   busGrad.addColorStop(0.5, '#ee5588');
@@ -2667,6 +2668,7 @@ function drawBeach() {
   ctx.fillStyle = '#888888';
   ctx.beginPath(); ctx.arc(815, 222, 3, 0, Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(915, 222, 3, 0, Math.PI*2); ctx.fill();
+  ctx.restore(); // end bus shadow
 
   // Daphne shadow
   drawGroundShadow(480, 375, 18);
@@ -2685,6 +2687,7 @@ function drawBeach() {
   // Beach towel with shadow
   ctx.fillStyle = 'rgba(0,0,0,0.06)';
   ctx.fillRect(352, 412, 80, 6);
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.2)'; ctx.shadowBlur = 6; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 3;
   ctx.fillStyle = '#ff5577';
   ctx.fillRect(350, 370, 80, 40);
   ctx.fillStyle = '#ff88aa';
@@ -2702,8 +2705,10 @@ function drawBeach() {
     const _fFlut = Math.sin(_twFT * 2.5 + f * 0.8) * 0.8;
     ctx.fillRect(350 + f*8 + _fFlut, 409, 4, 4);
   }
+  ctx.restore(); // end towel shadow
 
   // Sandcastle
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.2)'; ctx.shadowBlur = 6; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 3;
   ctx.fillStyle = '#ddcc99';
   ctx.beginPath(); ctx.arc(600, 420, 22, Math.PI, 0); ctx.fill();
   ctx.fillStyle = '#ccbb88';
@@ -2726,6 +2731,7 @@ function drawBeach() {
   ctx.strokeStyle = 'rgba(100,180,200,0.3)';
   ctx.lineWidth = 2;
   ctx.beginPath(); ctx.arc(600, 425, 28, 0.2, Math.PI - 0.2); ctx.stroke();
+  ctx.restore(); // end sandcastle shadow
 
   // Second palm tree
   drawEnhancedPalmTree(900, 120, 0.7);
@@ -3510,6 +3516,7 @@ function drawHotel() {
   ctx.lineWidth = 2;
   ctx.beginPath(); ctx.moveTo(480, 0); ctx.lineTo(480, 28); ctx.stroke();
   // Main body
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.35)'; ctx.shadowBlur = 10; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 4;
   const chandelierGrad = ctx.createRadialGradient(480, 42, 2, 480, 42, 30);
   chandelierGrad.addColorStop(0, '#fff8e0');
   chandelierGrad.addColorStop(0.4, '#f0d870');
@@ -3518,6 +3525,7 @@ function drawHotel() {
   ctx.beginPath();
   ctx.moveTo(455, 30); ctx.lineTo(505, 30); ctx.lineTo(500, 50);
   ctx.lineTo(460, 50); ctx.closePath(); ctx.fill();
+  ctx.restore(); // end chandelier body shadow
   // Crystal drops with animated sparkle
   const _ht0 = window._t || 0;
   for (let ci = 0; ci < 5; ci++) {
@@ -3555,6 +3563,7 @@ function drawHotel() {
   drawLightGlow(480, 200, 300, 'rgba(255,230,180,0.04)');
 
   // === Ornate mirror with gilt frame ===
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.35)'; ctx.shadowBlur = 10; ctx.shadowOffsetX = 3; ctx.shadowOffsetY = 4;
   const frameGrad = ctx.createLinearGradient(238, 0, 362, 0);
   frameGrad.addColorStop(0, '#b8860b');
   frameGrad.addColorStop(0.2, '#f0d060');
@@ -3563,6 +3572,7 @@ function drawHotel() {
   frameGrad.addColorStop(1, '#b8860b');
   ctx.fillStyle = frameGrad;
   ctx.fillRect(238, 68, 124, 178);
+  ctx.restore(); // end mirror frame shadow
   ctx.fillStyle = '#c49520';
   ctx.fillRect(243, 73, 114, 168);
   // Mirror glass
@@ -3699,6 +3709,7 @@ function drawHotel() {
   ctx.fillRect(625, 95, 130, 12);
 
   // === Reception desk with wood grain detail ===
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.35)'; ctx.shadowBlur = 12; ctx.shadowOffsetX = 3; ctx.shadowOffsetY = 5;
   const deskGrad = ctx.createLinearGradient(0, 315, 0, 375);
   deskGrad.addColorStop(0, '#8B5A2B');
   deskGrad.addColorStop(0.4, '#7a4a20');
@@ -3711,6 +3722,7 @@ function drawHotel() {
   deskTop.addColorStop(1, '#8B5A2B');
   ctx.fillStyle = deskTop;
   ctx.fillRect(342, 305, 266, 13);
+  ctx.restore(); // end reception desk shadow
   // Desk front panels
   ctx.strokeStyle = 'rgba(90,50,20,0.5)';
   ctx.lineWidth = 1.5;
@@ -3888,6 +3900,7 @@ function drawHotel() {
   }
 
   // === Lost & Found box ===
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.3)'; ctx.shadowBlur = 8; ctx.shadowOffsetX = 3; ctx.shadowOffsetY = 4;
   const boxGrad = ctx.createLinearGradient(55, 305, 55, 375);
   boxGrad.addColorStop(0, '#c8960b');
   boxGrad.addColorStop(0.5, '#b8860b');
@@ -3896,6 +3909,7 @@ function drawHotel() {
   ctx.fillRect(55, 310, 110, 65);
   ctx.fillStyle = '#b07a08';
   ctx.fillRect(52, 303, 116, 10);
+  ctx.restore(); // end lost & found box shadow
   ctx.fillStyle = 'rgba(255,255,255,0.15)';
   ctx.fillRect(52, 303, 116, 3);
   ctx.fillStyle = '#daa520';
@@ -3929,6 +3943,7 @@ function drawHotel() {
   ctx.translate(375, 148);
   ctx.rotate(_fStatWob);
   ctx.translate(-375, -148);
+  ctx.shadowColor = 'rgba(0,0,0,0.3)'; ctx.shadowBlur = 8; ctx.shadowOffsetX = 3; ctx.shadowOffsetY = 4;
   ctx.fillStyle = '#c8c0b0';
   ctx.fillRect(365, 148, 20, 8);
   ctx.fillStyle = '#b0a898';
@@ -4303,6 +4318,7 @@ function drawTikiBar() {
   const _surfT = window._t || 0;
   const _surfRock = Math.sin(_surfT * 0.4) * 0.008;
   ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.25)'; ctx.shadowBlur = 6; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 3;
   ctx.translate(145, 140);
   ctx.rotate(0.12 + _surfRock);
   // Board body
@@ -4429,6 +4445,8 @@ function drawTikiBar() {
   ctx.restore();
 
   // === Bar counter with bamboo detail ===
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.25)'; ctx.shadowBlur = 6; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 3;
   var counterGrad = ctx.createLinearGradient(0, 272, 0, 312);
   counterGrad.addColorStop(0, '#7a4a20');
   counterGrad.addColorStop(0.3, '#6a4018');
@@ -4452,6 +4470,7 @@ function drawTikiBar() {
   bamboo.addColorStop(1, '#b89848');
   ctx.fillStyle = bamboo;
   ctx.fillRect(243, 258, 464, 12);
+  ctx.restore();
   ctx.fillStyle = 'rgba(100,70,20,0.3)';
   for (var bk = 250; bk < 710; bk += 30) {
     ctx.fillRect(bk, 258, 2, 12);
@@ -4613,6 +4632,8 @@ function drawTikiBar() {
   // === Bar stools with woven seats ===
   for (var si = 0; si < 3; si++) {
     var sx = 273 + si * 100;
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.25)'; ctx.shadowBlur = 6; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 3;
     ctx.strokeStyle = '#a08040';
     ctx.lineWidth = 3;
     ctx.beginPath(); ctx.moveTo(sx - 10, 430); ctx.lineTo(sx - 2, 378); ctx.stroke();
@@ -4625,6 +4646,7 @@ function drawTikiBar() {
     seatGrad.addColorStop(1, '#b09040');
     ctx.fillStyle = seatGrad;
     ctx.beginPath(); ctx.ellipse(sx, 374, 17, 6, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
     ctx.save();
     ctx.globalAlpha = 0.15;
     ctx.strokeStyle = '#8a6828';
@@ -4640,6 +4662,8 @@ function drawTikiBar() {
   // === Tiki torches with faces and flames ===
   [[100, 100], [860, 100]].forEach(function(pos) {
     var tx = pos[0], ty = pos[1];
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.25)'; ctx.shadowBlur = 6; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 3;
     var poleGrad = ctx.createLinearGradient(tx - 5, 0, tx + 5, 0);
     poleGrad.addColorStop(0, '#6a4018');
     poleGrad.addColorStop(0.3, '#8a5a28');
@@ -4660,6 +4684,7 @@ function drawTikiBar() {
     ctx.fillRect(tx - 10, ty + 50, 20, 40);
     ctx.fillStyle = '#4a2a08';
     ctx.fillRect(tx - 9, ty + 52, 18, 5);
+    ctx.restore();
     // Eyes
     ctx.fillStyle = '#f0d860';
     ctx.beginPath();
@@ -6008,6 +6033,11 @@ function drawCove() {
 
   // === ROCKY OUTCROP - LEFT (bezier curves) ===
   // Main rock mass
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.2)';
+  ctx.shadowBlur = 6;
+  ctx.shadowOffsetX = 2;
+  ctx.shadowOffsetY = 3;
   const rockLG = ctx.createLinearGradient(0, 180, 160, 460);
   rockLG.addColorStop(0, '#6a5a4a');
   rockLG.addColorStop(0.3, '#8a7a6a');
@@ -6024,6 +6054,7 @@ function drawCove() {
   ctx.lineTo(0, 170);
   ctx.closePath();
   ctx.fill();
+  ctx.restore();
   // Rock texture layers
   ctx.fillStyle = 'rgba(100,85,70,0.4)';
   ctx.beginPath();
@@ -6073,6 +6104,11 @@ function drawCove() {
   });
 
   // === ROCKY OUTCROP - RIGHT (bezier curves) ===
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.2)';
+  ctx.shadowBlur = 6;
+  ctx.shadowOffsetX = 2;
+  ctx.shadowOffsetY = 3;
   const rockRG = ctx.createLinearGradient(800, 200, 960, 440);
   rockRG.addColorStop(0, '#7a6a5a');
   rockRG.addColorStop(0.3, '#8a7a6a');
@@ -6088,6 +6124,7 @@ function drawCove() {
   ctx.lineTo(960, 190);
   ctx.closePath();
   ctx.fill();
+  ctx.restore();
   // Rock texture
   ctx.fillStyle = 'rgba(90,75,60,0.35)';
   ctx.beginPath();
@@ -6134,6 +6171,10 @@ function drawCove() {
   const _boatRock = Math.sin(_boatT * 0.7) * 0.015;
   const _boatBob = Math.sin(_boatT * 0.5) * 0.5;
   ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.2)';
+  ctx.shadowBlur = 6;
+  ctx.shadowOffsetX = 2;
+  ctx.shadowOffsetY = 3;
   ctx.translate(705, 405 + _boatBob);
   ctx.rotate(_boatRock);
   ctx.translate(-705, -405);
@@ -6616,6 +6657,11 @@ function drawRoom7() {
   ctx.beginPath(); ctx.arc(50, 192, 5, 0, Math.PI * 2); ctx.fill();
 
   // Bed frame
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.35)';
+  ctx.shadowBlur = 8;
+  ctx.shadowOffsetX = 3;
+  ctx.shadowOffsetY = 4;
   const bedFrameG = ctx.createLinearGradient(0, 280, 0, 380);
   bedFrameG.addColorStop(0, '#7a4018');
   bedFrameG.addColorStop(1, '#5a2a08');
@@ -6625,6 +6671,7 @@ function drawRoom7() {
   ctx.fillStyle = '#5a2a08';
   ctx.fillRect(52, 376, 12, 24);
   ctx.fillRect(282, 376, 12, 24);
+  ctx.restore();
 
   // Mattress
   ctx.fillStyle = '#fcfcf8';
@@ -6690,6 +6737,11 @@ function drawRoom7() {
   }
 
   // --- Bedside table with decorative lamp ---
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.35)';
+  ctx.shadowBlur = 8;
+  ctx.shadowOffsetX = 3;
+  ctx.shadowOffsetY = 4;
   const tblG = ctx.createLinearGradient(305, 305, 305, 378);
   tblG.addColorStop(0, '#9a7520');
   tblG.addColorStop(1, '#7a5a14');
@@ -6705,6 +6757,7 @@ function drawRoom7() {
   ctx.fillStyle = '#7a5a14';
   ctx.fillRect(307, 375, 6, 25);
   ctx.fillRect(339, 375, 6, 25);
+  ctx.restore();
 
   // Lamp base
   const lampBaseG = ctx.createLinearGradient(320, 290, 332, 290);
@@ -6785,6 +6838,11 @@ function drawRoom7() {
   ctx.restore();
 
   // Flower vase with detailed flowers
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.35)';
+  ctx.shadowBlur = 8;
+  ctx.shadowOffsetX = 3;
+  ctx.shadowOffsetY = 4;
   const vaseG = ctx.createLinearGradient(623, 288, 640, 288);
   vaseG.addColorStop(0, '#3a7a9a');
   vaseG.addColorStop(0.5, '#4a98b8');
@@ -6797,6 +6855,7 @@ function drawRoom7() {
   ctx.bezierCurveTo(644, 295, 644, 310, 640, 320);
   ctx.closePath();
   ctx.fill();
+  ctx.restore();
   // Vase highlight
   ctx.strokeStyle = 'rgba(255,255,255,0.2)';
   ctx.lineWidth = 1;
@@ -6944,6 +7003,11 @@ function drawRoom7() {
   }
 
   // --- Minibar (right wall) ---
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.35)';
+  ctx.shadowBlur = 8;
+  ctx.shadowOffsetX = 3;
+  ctx.shadowOffsetY = 4;
   const miniG = ctx.createLinearGradient(860, 290, 860, 378);
   miniG.addColorStop(0, '#d8d0c8');
   miniG.addColorStop(1, '#c0b8b0');
@@ -6962,6 +7026,7 @@ function drawRoom7() {
   ctx.font = '5px monospace';
   ctx.fillText('MINI', 862, 302);
   ctx.fillText('BAR', 864, 310);
+  ctx.restore();
 
   // --- Slippers by bed ---
   ctx.fillStyle = '#f0a0b0';
@@ -7213,6 +7278,7 @@ function drawPool() {
   const _flamBob = Math.sin(_flamT * 0.8) * 1.5;
   const _flamRock = Math.sin(_flamT * 0.5) * 0.02;
   ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.25)'; ctx.shadowBlur = 6; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 3;
   ctx.translate(385, 285 + _flamBob);
   ctx.rotate(_flamRock);
   ctx.translate(-385, -285);
@@ -7353,6 +7419,8 @@ function drawPool() {
   const _divT = window._t || 0;
   const _divFlex = Math.sin(_divT * 1.2) * 1;
   // Support column
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.25)'; ctx.shadowBlur = 6; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 3;
   const dcG = ctx.createLinearGradient(456, 172, 468, 172);
   dcG.addColorStop(0, '#b0b0b0');
   dcG.addColorStop(0.5, '#d0d0d0');
@@ -7372,6 +7440,7 @@ function drawPool() {
   ctx.lineTo(540, 190 + _divFlex);
   ctx.closePath();
   ctx.fill();
+  ctx.restore();
   // Non-slip surface
   ctx.fillStyle = '#3a88cc';
   ctx.beginPath();
@@ -7392,6 +7461,8 @@ function drawPool() {
   // Helper to draw a lounger with a bro
   function drawBroOnLounger(lx, ly, shirtColor, name) {
     // Lounger legs
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.25)'; ctx.shadowBlur = 6; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 3;
     ctx.fillStyle = '#cc6688';
     ctx.fillRect(lx + 5, ly + 28, 4, 15);
     ctx.fillRect(lx + 55, ly + 28, 4, 15);
@@ -7413,6 +7484,7 @@ function drawPool() {
     llG.addColorStop(1, '#ee7799');
     ctx.fillStyle = llG;
     ctx.fillRect(lx, ly, 65, 30);
+    ctx.restore();
     // Lounger slat lines
     ctx.strokeStyle = 'rgba(200,80,120,0.2)';
     ctx.lineWidth = 0.5;
@@ -7467,6 +7539,8 @@ function drawPool() {
 
   // --- Sun lounger with magazine (left ~x100) ---
   // Lounger
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.25)'; ctx.shadowBlur = 6; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 3;
   ctx.fillStyle = '#cc6688';
   ctx.fillRect(105, 358, 4, 15);
   ctx.fillRect(160, 358, 4, 15);
@@ -7477,6 +7551,7 @@ function drawPool() {
   mlG.addColorStop(1, '#ee7799');
   ctx.fillStyle = mlG;
   ctx.fillRect(100, 325, 70, 32);
+  ctx.restore();
   ctx.strokeStyle = 'rgba(200,80,120,0.2)';
   ctx.lineWidth = 0.5;
   for (let sl = 108; sl < 170; sl += 8) {
@@ -7549,6 +7624,8 @@ function drawPool() {
   const _ppSway1 = Math.sin(_ppT * 1.0) * 1.5;
   const _ppSway2 = Math.sin(_ppT * 1.2 + 2.0) * 1.5;
   // Left potted plant
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.25)'; ctx.shadowBlur = 6; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 3;
   ctx.fillStyle = '#8a5a2a';
   ctx.fillRect(160, 420, 30, 30);
   ctx.fillStyle = '#a06830';
@@ -7560,8 +7637,11 @@ function drawPool() {
   ctx.beginPath(); ctx.arc(175 + _ppSway1, 402, 11, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = '#3aaa3a';
   ctx.beginPath(); ctx.arc(172 + _ppSway1 * 0.7, 405, 6, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
 
   // Right potted plant
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.25)'; ctx.shadowBlur = 6; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 3;
   ctx.fillStyle = '#8a5a2a';
   ctx.fillRect(900, 430, 26, 26);
   ctx.fillStyle = '#a06830';
@@ -7572,6 +7652,7 @@ function drawPool() {
   ctx.beginPath(); ctx.arc(914 + _ppSway2, 412, 10, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = '#3aaa3a';
   ctx.beginPath(); ctx.arc(912 + _ppSway2 * 0.6, 416, 5, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
 
   // --- Doorway hints ---
   ctx.fillStyle = '#cc8888';
@@ -8051,8 +8132,11 @@ function drawVilla() {
   const wallGrad = ctx.createLinearGradient(200, 70, 200, 320);
   wallGrad.addColorStop(0, '#ffd4e0'); wallGrad.addColorStop(0.3, '#ffccdd');
   wallGrad.addColorStop(0.7, '#f5bece'); wallGrad.addColorStop(1, '#eab0be');
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.2)'; ctx.shadowBlur = 6; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 3;
   ctx.fillStyle = wallGrad;
   ctx.fillRect(200, 70, 550, 250);
+  ctx.restore();
   for (let tw = 0; tw < 80; tw++) {
     ctx.fillStyle = 'rgba(255,255,255,' + (0.02 + (tw % 3) * 0.01) + ')';
     ctx.fillRect(205 + (tw * 89 + 17) % 540, 75 + (tw * 67 + 31) % 240, 3 + (tw % 4), 2 + (tw % 3));
@@ -8114,6 +8198,8 @@ function drawVilla() {
 
   // ── Villa front door — green with brass knocker ──
   const doorX = 455, doorY = 195, doorW = 52, doorH = 125;
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.2)'; ctx.shadowBlur = 6; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 3;
   ctx.fillStyle = 'rgba(0,0,0,0.12)'; ctx.fillRect(doorX - 5, doorY - 5, doorW + 10, doorH + 5);
   ctx.fillStyle = '#f0ece4'; ctx.fillRect(doorX - 4, doorY - 4, doorW + 8, doorH + 4);
   ctx.beginPath(); ctx.arc(doorX + doorW / 2, doorY, doorW / 2 + 4, Math.PI, 0); ctx.fillStyle = '#f0ece4'; ctx.fill();
@@ -8121,6 +8207,7 @@ function drawVilla() {
   doorGrad.addColorStop(0, '#2e8050'); doorGrad.addColorStop(0.3, '#3a9060'); doorGrad.addColorStop(0.7, '#348a58'); doorGrad.addColorStop(1, '#2a7848');
   ctx.fillStyle = doorGrad; ctx.fillRect(doorX, doorY, doorW, doorH);
   ctx.beginPath(); ctx.arc(doorX + doorW / 2, doorY, doorW / 2, Math.PI, 0); ctx.fill();
+  ctx.restore();
   ctx.strokeStyle = 'rgba(0,0,0,0.15)'; ctx.lineWidth = 1;
   ctx.strokeRect(doorX + 5, doorY + 10, doorW / 2 - 7, doorH / 2 - 20);
   ctx.strokeRect(doorX + doorW / 2 + 2, doorY + 10, doorW / 2 - 7, doorH / 2 - 20);
@@ -8184,6 +8271,8 @@ function drawVilla() {
   [[840,64],[855,64],[877,66],[905,67],[920,67]].forEach(([px,py]) => { ctx.fillRect(px-1.5,py,3,5); });
 
   // ══════ WROUGHT-IRON TABLE AND CHAIRS on terrace ══════
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.2)'; ctx.shadowBlur = 6; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 3;
   const tableX=100, tableY=292;
   ctx.fillStyle = 'rgba(0,0,0,0.1)'; ctx.beginPath(); ctx.ellipse(tableX,tableY+40,35,6,0,0,Math.PI*2); ctx.fill();
   ctx.strokeStyle = '#2a2a2a'; ctx.lineWidth = 2;
@@ -8226,6 +8315,7 @@ function drawVilla() {
   ctx.beginPath(); ctx.moveTo(ch2x+10,ch2y+12); ctx.lineTo(ch2x+12,ch2y+32); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(ch2x-10,ch2y+8); ctx.bezierCurveTo(ch2x-12,ch2y-5,ch2x-8,ch2y-15,ch2x,ch2y-18); ctx.bezierCurveTo(ch2x+8,ch2y-15,ch2x+12,ch2y-5,ch2x+10,ch2y+8); ctx.stroke();
   ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(ch2x-6,ch2y-2); ctx.bezierCurveTo(ch2x-4,ch2y-10,ch2x+4,ch2y-10,ch2x+6,ch2y-2); ctx.stroke();
+  ctx.restore();
 
   // ══════ TERRACOTTA POTS ══════
   const drawPot = (px,py,scale) => { const s=scale||1;
@@ -8280,12 +8370,15 @@ function drawVilla() {
   }
 
   // ══════ RECORD PLAYER on side table ══════
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.2)'; ctx.shadowBlur = 6; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 3;
   const rpX=760,rpY=280;
   ctx.fillStyle='rgba(0,0,0,0.1)'; ctx.beginPath(); ctx.ellipse(rpX,rpY+42,30,5,0,0,Math.PI*2); ctx.fill();
   ctx.fillStyle='#6a4020'; ctx.fillRect(rpX-25,rpY+10,4,30); ctx.fillRect(rpX+22,rpY+10,4,30);
   ctx.strokeStyle='#5a3518'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(rpX-23,rpY+30); ctx.lineTo(rpX+24,rpY+25); ctx.stroke();
   const tblGrad=ctx.createLinearGradient(rpX-30,rpY,rpX+30,rpY); tblGrad.addColorStop(0,'#7a4a25'); tblGrad.addColorStop(0.2,'#8a5a30'); tblGrad.addColorStop(0.5,'#9a6a38'); tblGrad.addColorStop(0.8,'#8a5a30'); tblGrad.addColorStop(1,'#7a4a25');
   ctx.fillStyle=tblGrad; ctx.fillRect(rpX-30,rpY+4,60,8);
+  ctx.restore();
   ctx.strokeStyle='rgba(60,30,10,0.15)'; ctx.lineWidth=0.5;
   for(let wg=rpY+5;wg<rpY+11;wg+=2){ctx.beginPath(); ctx.moveTo(rpX-28,wg); ctx.bezierCurveTo(rpX-15,wg+0.5,rpX+10,wg-0.5,rpX+28,wg); ctx.stroke();}
   const rpBodyGrad=ctx.createLinearGradient(rpX-24,rpY-16,rpX+24,rpY-16); rpBodyGrad.addColorStop(0,'#8a5a28'); rpBodyGrad.addColorStop(0.3,'#a07030'); rpBodyGrad.addColorStop(0.7,'#967040'); rpBodyGrad.addColorStop(1,'#806028');
@@ -10743,6 +10836,8 @@ function drawLighthouse() {
 
   // === ROCKY CLIFF with detailed formation ===
   // Main rock mass
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.2)'; ctx.shadowBlur = 6; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 3;
   const rockGrad = ctx.createLinearGradient(0, 290, 0, 480);
   rockGrad.addColorStop(0, '#7a6a55');
   rockGrad.addColorStop(0.2, '#6a5a48');
@@ -10764,6 +10859,7 @@ function drawLighthouse() {
   ctx.lineTo(0, 480);
   ctx.closePath();
   ctx.fill();
+  ctx.restore();
 
   // Rock face details - cracks and fissures
   ctx.strokeStyle = 'rgba(50,40,30,0.4)';
@@ -10886,6 +10982,8 @@ function drawLighthouse() {
   }
 
   // Main lighthouse tower - white base
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.2)'; ctx.shadowBlur = 6; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 3;
   ctx.fillStyle = '#f0ece4';
   ctx.beginPath();
   ctx.moveTo(lhX - 36, lhBaseY);
@@ -10894,6 +10992,7 @@ function drawLighthouse() {
   ctx.lineTo(lhX + 36, lhBaseY);
   ctx.closePath();
   ctx.fill();
+  ctx.restore();
 
   // White highlight on tower (rounded look)
   const towerHighlight = ctx.createLinearGradient(lhX - 30, 0, lhX + 30, 0);
@@ -10955,6 +11054,8 @@ function drawLighthouse() {
   ctx.fillRect(lhX - 30, lhTopY + 10, 60, 3);
 
   // Iron railing with individual balusters
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.2)'; ctx.shadowBlur = 6; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 3;
   ctx.strokeStyle = '#3a3a3a';
   ctx.lineWidth = 2;
   // Railing top rail
@@ -10980,6 +11081,7 @@ function drawLighthouse() {
   ctx.fillStyle = '#555555';
   ctx.beginPath(); ctx.arc(lhX - 32, lhTopY - 10, 2.5, 0, Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(lhX + 32, lhTopY - 10, 2.5, 0, Math.PI*2); ctx.fill();
+  ctx.restore();
 
   // === LAMP ROOM with glass panels ===
   // Glass structure (warm glowing)
@@ -11117,6 +11219,8 @@ function drawLighthouse() {
   }
 
   // === WEATHERED WOODEN BENCH with memorial plaque ===
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.2)'; ctx.shadowBlur = 6; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 3;
   // Bench legs
   ctx.fillStyle = '#5a3a18';
   ctx.fillRect(568, 378, 6, 22);
@@ -11157,6 +11261,7 @@ function drawLighthouse() {
   ctx.fillStyle = '#5a3a18';
   ctx.fillRect(564, 350, 6, 30);
   ctx.fillRect(670, 350, 6, 30);
+  ctx.restore();
 
   // Brass memorial plaque
   const plaqueGrad = ctx.createLinearGradient(588, 340, 588, 355);
