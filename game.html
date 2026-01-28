@@ -2657,6 +2657,19 @@ function drawBeach() {
   // Palm tree left (behind characters)
   drawEnhancedPalmTree(70, 100, 1);
 
+  // Dappled sunlight through palm fronds
+  const _beachDapT = window._t || 0;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  for (let dl = 0; dl < 12; dl++) {
+    const _dlX = 30 + dl * 12 + Math.sin(_beachDapT * 0.3 + dl * 0.8) * 3;
+    const _dlY = 340 + (dl * 7) % 80 + Math.sin(_beachDapT * 0.5 + dl * 1.2) * 2;
+    const _dlAlpha = 0.03 + 0.015 * Math.sin(_beachDapT * 0.8 + dl * 1.5);
+    ctx.fillStyle = `rgba(255,250,200,${_dlAlpha})`;
+    ctx.beginPath(); ctx.ellipse(_dlX, _dlY, 8 + (dl % 4) * 2, 4 + (dl % 3), dl * 0.3, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.restore();
+
   // Pink bus (right side, background)
   // Bus shadow
   ctx.fillStyle = 'rgba(0,0,0,0.08)';
@@ -3615,6 +3628,37 @@ function drawHotel() {
   ctx.globalCompositeOperation = 'screen';
   ctx.fillStyle = 'rgba(255,240,200,0.06)';
   ctx.fillRect(380, 360, 200, 120);
+  ctx.restore();
+
+  // Volumetric chandelier light cones
+  const _htlVolT = window._t || 0;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  for (let lc = 0; lc < 3; lc++) {
+    const lcx = 462 + lc * 20;
+    const _lcFlick = 0.015 + 0.005 * Math.sin(_htlVolT * (2.5 + lc * 0.8) + lc * 1.5);
+    const lcGrad = ctx.createLinearGradient(lcx, 50, lcx, 300);
+    lcGrad.addColorStop(0, `rgba(255,240,200,${_lcFlick})`);
+    lcGrad.addColorStop(0.5, `rgba(255,235,190,${_lcFlick * 0.6})`);
+    lcGrad.addColorStop(1, 'rgba(255,230,180,0)');
+    ctx.fillStyle = lcGrad;
+    ctx.beginPath();
+    ctx.moveTo(lcx - 3, 50);
+    ctx.lineTo(lcx - 40, 300);
+    ctx.lineTo(lcx + 40, 300);
+    ctx.lineTo(lcx + 3, 50);
+    ctx.closePath();
+    ctx.fill();
+  }
+  // Floating dust motes in light beams
+  for (let dm = 0; dm < 8; dm++) {
+    const _dmPhase = (_htlVolT * 0.3 + dm * 0.7) % 3.0;
+    const _dmX = 440 + Math.sin(_htlVolT * 0.5 + dm * 2.1) * 35 + dm * 8;
+    const _dmY = 60 + _dmPhase * 80;
+    const _dmAlpha = Math.max(0, 0.15 - Math.abs(_dmPhase - 1.5) * 0.1);
+    ctx.fillStyle = `rgba(255,240,200,${_dmAlpha})`;
+    ctx.beginPath(); ctx.arc(_dmX, _dmY, 1 + Math.sin(_htlVolT + dm) * 0.3, 0, Math.PI*2); ctx.fill();
+  }
   ctx.restore();
 
   // === Ornate mirror with gilt frame ===
@@ -4782,6 +4826,21 @@ function drawTikiBar() {
     // Animated flame
     drawAnimatedFlame(tx, ty - 5, 10, 35);
   });
+
+  // Volumetric tiki torch glow
+  const _tikiVolT = window._t || 0;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  [210, 760].forEach((tx, ti) => {
+    const _tVGlow = 0.03 + 0.01 * Math.sin(_tikiVolT * (2 + ti * 0.5));
+    const tGlow = ctx.createRadialGradient(tx, 140, 5, tx, 200, 120);
+    tGlow.addColorStop(0, `rgba(255,180,80,${_tVGlow})`);
+    tGlow.addColorStop(0.4, `rgba(255,150,60,${_tVGlow * 0.5})`);
+    tGlow.addColorStop(1, 'rgba(255,120,40,0)');
+    ctx.fillStyle = tGlow;
+    ctx.fillRect(tx - 120, 80, 240, 200);
+  });
+  ctx.restore();
 
   // === Hanging coconut shell lanterns ===
   [250, 480, 700].forEach(function(lx) {
@@ -6034,6 +6093,25 @@ function drawCove() {
 
   // Animated lens flare
   drawLensFlare(480, 185, 0.18);
+
+  // Sunset god rays through clouds
+  const _coveGodT = window._t || 0;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  for (let gr = 0; gr < 7; gr++) {
+    const _grAngle = -0.6 + gr * 0.2 + Math.sin(_coveGodT * 0.15 + gr * 0.5) * 0.03;
+    const _grAlpha = 0.012 + 0.005 * Math.sin(_coveGodT * 0.4 + gr * 1.2);
+    const _grLen = 300 + (gr % 3) * 60;
+    ctx.fillStyle = `rgba(255,200,120,${_grAlpha})`;
+    ctx.beginPath();
+    ctx.moveTo(480 - 4, 185);
+    ctx.lineTo(480 + Math.cos(_grAngle) * _grLen - 25, 185 + Math.sin(_grAngle) * _grLen);
+    ctx.lineTo(480 + Math.cos(_grAngle) * _grLen + 25, 185 + Math.sin(_grAngle) * _grLen);
+    ctx.lineTo(480 + 4, 185);
+    ctx.closePath();
+    ctx.fill();
+  }
+  ctx.restore();
 
   // Stars emerging in upper sky
   drawStarField(35, 0.3);
@@ -9486,6 +9564,20 @@ function drawArcade() {
   drawLightGlow(245, 10, 180, 'rgba(255,50,200,0.03)');
   ctx.restore();
 
+  // Volumetric neon sign haze
+  const _arcVolT = window._t || 0;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  // "VINYL IS FINAL" neon glow haze
+  const _neonPulse = 0.02 + 0.008 * Math.sin(_arcVolT * 2.5);
+  const neonHaze = ctx.createRadialGradient(480, 80, 10, 480, 150, 200);
+  neonHaze.addColorStop(0, `rgba(255,50,200,${_neonPulse})`);
+  neonHaze.addColorStop(0.3, `rgba(200,50,255,${_neonPulse * 0.6})`);
+  neonHaze.addColorStop(1, 'rgba(150,50,255,0)');
+  ctx.fillStyle = neonHaze;
+  ctx.fillRect(280, 0, 400, 250);
+  ctx.restore();
+
   // ================================================================
   // RECORDS ON WALL - displayed with detailed sleeves
   // ================================================================
@@ -11351,6 +11443,23 @@ function drawLighthouse() {
   // Rotating lighthouse beam
   drawLighthouseBeam(lhX, lhTopY - 12, -Math.PI * 0.6, 350, 0.25);
   drawLighthouseBeam(lhX, lhTopY - 12, Math.PI * 0.4, 350, 0.25);
+
+  // Volumetric fog particles in lighthouse beam
+  const _lhBeamT = window._t || 0;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  for (let fp = 0; fp < 15; fp++) {
+    const _fpPhase = (_lhBeamT * 0.2 + fp * 0.5) % 3.0;
+    const _fpDist = 30 + _fpPhase * 100;
+    const _beamAngle = -0.4 + Math.sin(_lhBeamT * 0.3) * 0.15;
+    const _fpX = 280 + Math.cos(_beamAngle) * _fpDist + Math.sin(_lhBeamT * 0.7 + fp * 1.3) * 8;
+    const _fpY = 120 + Math.sin(_beamAngle) * _fpDist * 0.3;
+    const _fpAlpha = Math.max(0, 0.06 - _fpPhase * 0.018);
+    const _fpSize = 2 + _fpPhase * 1.5;
+    ctx.fillStyle = `rgba(255,250,220,${_fpAlpha})`;
+    ctx.beginPath(); ctx.arc(_fpX, _fpY, _fpSize, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.restore();
 
   // Red dome cap
   ctx.fillStyle = '#bb2222';
