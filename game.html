@@ -6345,9 +6345,7 @@ function drawPool() {
     ctx.moveTo(385 + Math.cos(ra) * 16, 285 + Math.sin(ra) * 16);
     ctx.lineTo(385 + Math.cos(ra) * 38, 285 + Math.sin(ra) * 38);
     ctx.stroke();
-  
-  enhanceScene('outdoor');
-}
+  }
 
   // Flamingo neck (curved)
   ctx.fillStyle = '#ff69b4';
@@ -6645,6 +6643,8 @@ function drawPool() {
   sunG.addColorStop(1, 'rgba(0,0,0,0)');
   ctx.fillStyle = sunG;
   ctx.fillRect(0, 0, 960, 480);
+
+  enhanceScene('outdoor');
 }
 
 // ─── DRAWING: VILLA ─────────────────────────────────────────────
