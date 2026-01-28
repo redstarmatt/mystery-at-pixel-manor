@@ -5547,13 +5547,24 @@ function drawTown() {
   ctx.lineTo(805, 400);
   ctx.closePath();
   ctx.fill();
-  // Chrome headlight
-  const headlightG = ctx.createRadialGradient(797, 378, 1, 797, 378, 5);
+  // Chrome headlight (animated glint)
+  const _hlT = window._t || 0;
+  const _hlPulse = 0.85 + 0.15 * Math.sin(_hlT * 2.0);
+  const headlightG = ctx.createRadialGradient(797, 378, 1, 797, 378, 5 + Math.sin(_hlT * 1.5) * 0.5);
   headlightG.addColorStop(0, '#ffffff');
   headlightG.addColorStop(0.5, '#ffffcc');
   headlightG.addColorStop(1, '#ccccaa');
   ctx.fillStyle = headlightG;
   ctx.beginPath(); ctx.arc(797, 378, 5, 0, Math.PI*2); ctx.fill();
+  // Chrome reflection glint
+  const _hlGlint = Math.max(0, Math.sin(_hlT * 2.5 + 0.5) - 0.9);
+  if (_hlGlint > 0) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.fillStyle = `rgba(255,255,240,${_hlGlint * 8})`;
+    ctx.beginPath(); ctx.arc(796, 376, 2, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
   // Seat
   ctx.fillStyle = '#333';
   ctx.beginPath();
@@ -6877,10 +6888,20 @@ function drawRoom7() {
   // Sun in painting
   ctx.fillStyle = '#ffe866';
   ctx.beginPath(); ctx.arc(865, 120, 10, 0, Math.PI * 2); ctx.fill();
-  // Frame highlight
+  // Frame highlight (animated gleam)
   ctx.strokeStyle = 'rgba(255,215,0,0.3)';
   ctx.lineWidth = 1;
   ctx.strokeRect(822, 102, 86, 66);
+  const _frameT = window._t || 0;
+  const _frameGleam = ((_frameT * 0.12) % 2.5);
+  if (_frameGleam < 1.0) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    const _fgX = 822 + _frameGleam * 86;
+    ctx.fillStyle = `rgba(255,230,150,${0.25 * (1 - Math.abs(_frameGleam - 0.5) * 2)})`;
+    ctx.beginPath(); ctx.arc(_fgX, 102, 3, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
 
   // --- Bedside rug with pattern ---
   ctx.fillStyle = '#b84060';
@@ -7412,11 +7433,20 @@ function drawPool() {
     // White zinc on nose
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(lx + 8, ly + 6, 6, 3);
-    // Sunglasses
+    // Sunglasses with animated glint
     ctx.fillStyle = '#333';
     ctx.fillRect(lx + 5, ly + 2, 5, 3);
     ctx.fillRect(lx + 12, ly + 2, 5, 3);
     ctx.fillRect(lx + 10, ly + 3, 2, 1);
+    const _sgT = window._t || 0;
+    const _sgGlint = Math.max(0, Math.sin(_sgT * 1.8 + lx * 0.05) - 0.88);
+    if (_sgGlint > 0) {
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.fillStyle = `rgba(200,220,255,${_sgGlint * 6})`;
+      ctx.beginPath(); ctx.arc(lx + 7, ly + 3, 2, 0, Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
   }
 
   drawBroOnLounger(565, 330, '#5566aa', 'Ken');
