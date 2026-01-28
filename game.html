@@ -922,8 +922,8 @@ const ROOMS = {
   town: {
     name: 'Hamilton Town Square',
     draw: drawTown,
-    navLeft: 'arcade',
-    navRight: 'tikibar',
+    navLeft: 'tikibar',
+    navRight: 'arcade',
     hotspots: [
       { id: 'town_market', x: 100, y: 200, w: 200, h: 180, label: 'Market Stall',
         onLook: () => showDialog('Chris', 'A colourful market stall selling fruit, souvenirs, and what appears to be "Genuine Bermuda Triangle Maps" for twenty dollars. Seems legit.'),
@@ -1256,7 +1256,7 @@ const ROOMS = {
   arcade: {
     name: 'Vinyl Paradise Record Shop',
     draw: drawArcade,
-    navRight: 'town',
+    navLeft: 'town',
     hotspots: [
       { id: 'arcade_kev', x: 300, y: 150, w: 120, h: 250, label: 'DJ Kev',
         onLook: () => showDialog('Chris', 'A guy with dreadlocks piled under a massive knitted hat, oversized headphones around his neck, and the most relaxed vibe I\'ve ever encountered. He IS the music.'),
