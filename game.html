@@ -3859,12 +3859,20 @@ function drawHotel() {
   ctx.strokeStyle = '#a06050';
   ctx.lineWidth = 1.2;
   ctx.beginPath(); ctx.arc(455, 192, 5, 0.1, Math.PI - 0.1); ctx.stroke();
-  // Name badge
+  // Name badge (animated gleam)
   ctx.fillStyle = '#daa520';
   ctx.fillRect(433, 210, 28, 10);
   ctx.fillStyle = '#4a2a08';
   ctx.font = '6px monospace';
   ctx.fillText('MARCO', 434, 218);
+  const _badgeGleam = ((_marcoT * 0.15) % 2.0);
+  if (_badgeGleam < 1.0) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.fillStyle = `rgba(255,250,200,${0.15 * (1 - Math.abs(_badgeGleam - 0.5) * 2)})`;
+    ctx.fillRect(433 + _badgeGleam * 28, 210, 4, 10);
+    ctx.restore();
+  }
 
   // === Lost & Found box ===
   const boxGrad = ctx.createLinearGradient(55, 305, 55, 375);
@@ -6497,15 +6505,24 @@ function drawRoom7() {
   ctx.bezierCurveTo(538, 190, 530, 180, 528, 238);
   ctx.stroke();
 
-  // Curtain tieback tassels
+  // Curtain tieback tassels (animated sway)
+  const _tassT = window._t || 0;
+  const _tassSway = Math.sin(_tassT * 1.3) * 1.2;
   ctx.fillStyle = '#daa520';
   ctx.beginPath(); ctx.arc(368, 160, 4, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = '#b8860b';
-  ctx.fillRect(366, 160, 4, 10);
+  ctx.fillRect(366 + _tassSway * 0.3, 160, 4, 10);
+  // Tassel fringe
+  for (let tf = 0; tf < 3; tf++) {
+    ctx.fillRect(365 + tf * 2 + _tassSway * 0.5, 170, 1.5, 4 + Math.sin(_tassT * 2 + tf) * 1);
+  }
   ctx.fillStyle = '#daa520';
   ctx.beginPath(); ctx.arc(533, 160, 4, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = '#b8860b';
-  ctx.fillRect(531, 160, 4, 10);
+  ctx.fillRect(531 - _tassSway * 0.3, 160, 4, 10);
+  for (let tf = 0; tf < 3; tf++) {
+    ctx.fillRect(530 + tf * 2 - _tassSway * 0.5, 170, 1.5, 4 + Math.sin(_tassT * 2 + tf + 1) * 1);
+  }
 
   // --- King bed (left side) ---
   // Ornate headboard
@@ -9238,10 +9255,19 @@ function drawArcade() {
   ctx.lineWidth = 0.6;
   ctx.beginPath(); ctx.arc(37, 294, 10, 0, Math.PI*2); ctx.stroke();
   ctx.beginPath(); ctx.arc(37, 294, 5, 0, Math.PI*2); ctx.stroke();
-  // Power LED on speaker
+  // Speaker cone vibration (bass pulse)
+  var _spkT = window._t || 0;
+  var _bassPulse = Math.sin(_spkT * 8) * 0.4 * (0.5 + 0.5 * Math.sin(_spkT * 0.5));
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  ctx.fillStyle = `rgba(50,50,60,${0.05 + Math.abs(_bassPulse) * 0.1})`;
+  ctx.beginPath(); ctx.arc(37, 340, 14 + _bassPulse * 2, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(37, 294, 10 + _bassPulse * 1.5, 0, Math.PI*2); ctx.fill();
+  ctx.restore();
+  // Power LED on speaker (animated flicker)
   ctx.save();
   ctx.shadowColor = '#ff0000';
-  ctx.shadowBlur = 4;
+  ctx.shadowBlur = 4 + Math.sin(_spkT * 3) * 1;
   ctx.fillStyle = '#ff3333';
   ctx.beginPath(); ctx.arc(55, 283, 1.5, 0, Math.PI*2); ctx.fill();
   ctx.restore();
@@ -10068,11 +10094,21 @@ function drawCaptainPete(x, y) {
   ctx.moveTo(x+8, y+16);
   ctx.quadraticCurveTo(x+6, y+28, x+3, y+38);
   ctx.stroke();
-  // Lanyard pendant (small compass or whistle)
+  // Lanyard pendant (animated gentle swing)
+  const _lanyT = window._t || 0;
+  const _lanySway = Math.sin(_lanyT * 0.8) * 1.5;
   ctx.fillStyle = '#b8860b';
-  ctx.beginPath(); ctx.arc(x, y+40, 3, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x + _lanySway, y+40, 3, 0, Math.PI*2); ctx.fill();
   ctx.fillStyle = '#d4a520';
-  ctx.beginPath(); ctx.arc(x, y+40, 1.5, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x + _lanySway, y+40, 1.5, 0, Math.PI*2); ctx.fill();
+  // Compass needle spin
+  ctx.save();
+  ctx.translate(x + _lanySway, y+40);
+  ctx.rotate(_lanyT * 0.3);
+  ctx.strokeStyle = '#ff3333';
+  ctx.lineWidth = 0.5;
+  ctx.beginPath(); ctx.moveTo(-1.2, 0); ctx.lineTo(1.2, 0); ctx.stroke();
+  ctx.restore();
 
   // === ARMS (slightly stooped, hands forward) ===
   // Left arm
