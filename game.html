@@ -2909,10 +2909,18 @@ function drawDaphne(x, y) {
   ctx.beginPath(); ctx.arc(x, y+7, 3.5, 0.1, Math.PI-0.1); ctx.fill();
   ctx.fillStyle = '#ee7799';
   ctx.beginPath(); ctx.arc(x, y+6.5, 3, Math.PI+0.2, -0.2); ctx.fill();
-  // Earrings
+  // Earrings (animated gentle sway + sparkle)
+  const _earT = window._t || 0;
+  const _earSway = Math.sin(_earT * 1.8) * 0.8;
   ctx.fillStyle = '#daa520';
-  ctx.beginPath(); ctx.arc(x-14, y+3, 2, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x+14, y+3, 2, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x-14+_earSway, y+3, 2, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+14+_earSway, y+3, 2, 0, Math.PI*2); ctx.fill();
+  // Earring sparkle
+  const _earSparkle = Math.max(0, Math.sin(_earT * 3.5 + 1.0));
+  if (_earSparkle > 0.9) {
+    ctx.fillStyle = `rgba(255,255,200,${(_earSparkle - 0.9) * 8})`;
+    ctx.beginPath(); ctx.arc(x-13+_earSway, y+2, 1.5, 0, Math.PI*2); ctx.fill();
+  }
   // Legs
   ctx.fillStyle = '#f5c6a0';
   ctx.fillRect(x-10, y+90, 7, 32);
@@ -3723,10 +3731,26 @@ function drawHotel() {
   ctx.beginPath();
   ctx.moveTo(483, 200); ctx.lineTo(465, 200); ctx.lineTo(470, 230); ctx.lineTo(483, 225);
   ctx.closePath(); ctx.fill();
-  // Jacket buttons
+  // Jacket buttons (animated sparkle)
   ctx.fillStyle = '#daa520';
   ctx.beginPath(); ctx.arc(455, 240, 2.5, 0, Math.PI * 2); ctx.fill();
   ctx.beginPath(); ctx.arc(455, 258, 2.5, 0, Math.PI * 2); ctx.fill();
+  const _btnSparkle = Math.max(0, Math.sin(_marcoT * 2.8 + 0.5));
+  if (_btnSparkle > 0.92) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.fillStyle = `rgba(255,250,200,${(_btnSparkle - 0.92) * 10})`;
+    ctx.beginPath(); ctx.arc(456, 239, 3, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+  const _btnSparkle2 = Math.max(0, Math.sin(_marcoT * 2.8 + 3.0));
+  if (_btnSparkle2 > 0.92) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.fillStyle = `rgba(255,250,200,${(_btnSparkle2 - 0.92) * 10})`;
+    ctx.beginPath(); ctx.arc(456, 257, 3, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
   // Shirt underneath
   ctx.fillStyle = '#f8f4f0';
   ctx.fillRect(446, 200, 18, 30);
@@ -3773,13 +3797,20 @@ function drawHotel() {
   ctx.fillStyle = '#1a1a1a';
   ctx.fillRect(444, 172, 7, 2);
   ctx.fillRect(458, 172, 7, 2);
-  // Eyes with pupils
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(446, 175, 6, 5);
-  ctx.fillRect(460, 175, 6, 5);
-  ctx.fillStyle = '#2a1a0a';
-  ctx.fillRect(448, 176, 3, 4);
-  ctx.fillRect(462, 176, 3, 4);
+  // Eyes with pupils (animated blink)
+  const _marcoBlink = (_marcoT * 0.35 + 1.0) % 5;
+  if (_marcoBlink > 4.87) {
+    ctx.fillStyle = '#d4b090';
+    ctx.fillRect(446, 177, 6, 2);
+    ctx.fillRect(460, 177, 6, 2);
+  } else {
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(446, 175, 6, 5);
+    ctx.fillRect(460, 175, 6, 5);
+    ctx.fillStyle = '#2a1a0a';
+    ctx.fillRect(448, 176, 3, 4);
+    ctx.fillRect(462, 176, 3, 4);
+  }
   // Nose
   ctx.fillStyle = '#d4b090';
   ctx.beginPath(); ctx.moveTo(454, 180); ctx.lineTo(452, 186); ctx.lineTo(458, 186); ctx.closePath(); ctx.fill();
@@ -4438,16 +4469,17 @@ function drawTikiBar() {
   // Hair
   ctx.fillStyle = '#2a1408';
   ctx.beginPath(); ctx.arc(390, 156, 20, Math.PI + 0.15, -0.15); ctx.fill();
-  // Bandana
+  // Bandana (animated tail flutter)
   var bandanaGrad = ctx.createLinearGradient(370, 150, 410, 150);
   bandanaGrad.addColorStop(0, '#aa2233');
   bandanaGrad.addColorStop(0.5, '#cc3344');
   bandanaGrad.addColorStop(1, '#aa2233');
   ctx.fillStyle = bandanaGrad;
   ctx.fillRect(370, 150, 40, 7);
+  var _bandFlut = Math.sin(_sandyT * 3.5) * 2.5 + Math.sin(_sandyT * 5.2) * 1;
   ctx.fillStyle = '#cc3344';
   ctx.beginPath();
-  ctx.moveTo(410, 152); ctx.lineTo(418, 148); ctx.lineTo(416, 156);
+  ctx.moveTo(410, 152); ctx.lineTo(418 + _bandFlut, 148 + _bandFlut * 0.3); ctx.lineTo(416 + _bandFlut * 0.5, 156 + _bandFlut * 0.2);
   ctx.closePath(); ctx.fill();
   ctx.fillStyle = 'rgba(255,255,255,0.3)';
   for (var bd = 374; bd < 408; bd += 8) {
@@ -4457,13 +4489,20 @@ function drawTikiBar() {
   ctx.fillStyle = '#2a1408';
   ctx.fillRect(381, 159, 6, 1.5);
   ctx.fillRect(393, 159, 6, 1.5);
-  // Eyes
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(382, 161, 6, 5);
-  ctx.fillRect(394, 161, 6, 5);
-  ctx.fillStyle = '#1a3a2a';
-  ctx.fillRect(384, 162, 3, 4);
-  ctx.fillRect(396, 162, 3, 4);
+  // Eyes (animated blink)
+  var _sandyBlink = (_sandyT * 0.3 + 2.5) % 4.5;
+  if (_sandyBlink > 4.35) {
+    ctx.fillStyle = '#c89a68';
+    ctx.fillRect(382, 163, 6, 2);
+    ctx.fillRect(394, 163, 6, 2);
+  } else {
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(382, 161, 6, 5);
+    ctx.fillRect(394, 161, 6, 5);
+    ctx.fillStyle = '#1a3a2a';
+    ctx.fillRect(384, 162, 3, 4);
+    ctx.fillRect(396, 162, 3, 4);
+  }
   // Nose
   ctx.fillStyle = '#c08a58';
   ctx.beginPath();
@@ -4852,13 +4891,15 @@ function drawTown() {
     ctx.fillRect(wx-3, wy+40, 36, 8);
     ctx.fillStyle = '#7a4e2c';
     ctx.fillRect(wx-3, wy+40, 36, 2);
-    // Flowers in box
+    // Flowers in box (animated gentle sway)
+    const _fbT = window._t || 0;
     const boxFlowers = ['#ff3366','#ff6699','#ff4477','#ff5588'];
     for (let f = 0; f < 4; f++) {
+      const _fSway = Math.sin(_fbT * 1.8 + f * 1.5 + wx * 0.05) * 1.5;
       ctx.fillStyle = '#22aa33';
       ctx.fillRect(wx + 2 + f*8, wy+34, 2, 8);
       ctx.fillStyle = boxFlowers[f];
-      ctx.beginPath(); ctx.arc(wx + 3 + f*8, wy+33, 3, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(wx + 3 + f*8 + _fSway, wy+33, 3, 0, Math.PI*2); ctx.fill();
     }
   });
   // Windows row 2 (same style)
@@ -5105,12 +5146,15 @@ function drawTown() {
     const my = 78 + Math.sin(angle) * 11;
     ctx.beginPath(); ctx.arc(mx, my, 1, 0, Math.PI*2); ctx.fill();
   }
-  // Clock hands
+  // Clock hands (animated)
+  const _clockT = window._t || 0;
+  const _minAngle = (_clockT * 0.02) % (Math.PI * 2) - Math.PI / 2;
+  const _hrAngle = (_clockT * 0.0017) % (Math.PI * 2) - Math.PI / 2;
   ctx.strokeStyle = '#333';
   ctx.lineWidth = 1.5;
-  ctx.beginPath(); ctx.moveTo(485, 78); ctx.lineTo(485, 68); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(485, 78); ctx.lineTo(485 + Math.cos(_minAngle) * 10, 78 + Math.sin(_minAngle) * 10); ctx.stroke();
   ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.moveTo(485, 78); ctx.lineTo(493, 78); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(485, 78); ctx.lineTo(485 + Math.cos(_hrAngle) * 7, 78 + Math.sin(_hrAngle) * 7); ctx.stroke();
   // Clock center dot
   ctx.fillStyle = '#333';
   ctx.beginPath(); ctx.arc(485, 78, 1.5, 0, Math.PI*2); ctx.fill();
@@ -5868,25 +5912,27 @@ function drawCove() {
   ctx.bezierCurveTo(20, 165, 50, 180, 70, 200);
   ctx.bezierCurveTo(100, 230, 140, 250, 160, 290);
   ctx.stroke();
-  // Green plants growing from cracks
-  [[25, 195], [55, 215], [40, 260], [80, 300], [20, 340], [60, 370]].forEach(([px, py]) => {
+  // Green plants growing from cracks (animated sway)
+  const _covePlantT = window._t || 0;
+  [[25, 195], [55, 215], [40, 260], [80, 300], [20, 340], [60, 370]].forEach(([px, py], pi) => {
+    const _pSway = Math.sin(_covePlantT * 1.2 + pi * 1.5) * 3 + Math.sin(_covePlantT * 2.1 + pi * 0.8) * 1.5;
     ctx.fillStyle = '#33aa44';
     ctx.beginPath();
     ctx.moveTo(px, py);
-    ctx.quadraticCurveTo(px-10, py-25, px+3, py-35);
-    ctx.quadraticCurveTo(px+8, py-20, px, py);
+    ctx.quadraticCurveTo(px-10+_pSway*0.5, py-25, px+3+_pSway, py-35);
+    ctx.quadraticCurveTo(px+8+_pSway*0.3, py-20, px, py);
     ctx.fill();
     ctx.fillStyle = '#22aa33';
     ctx.beginPath();
     ctx.moveTo(px+2, py);
-    ctx.quadraticCurveTo(px+14, py-22, px+8, py-32);
-    ctx.quadraticCurveTo(px+16, py-18, px+2, py);
+    ctx.quadraticCurveTo(px+14+_pSway*0.4, py-22, px+8+_pSway*0.8, py-32);
+    ctx.quadraticCurveTo(px+16+_pSway*0.2, py-18, px+2, py);
     ctx.fill();
     ctx.fillStyle = '#44bb55';
     ctx.beginPath();
     ctx.moveTo(px, py-2);
-    ctx.quadraticCurveTo(px-6, py-15, px+1, py-20);
-    ctx.quadraticCurveTo(px+4, py-12, px, py-2);
+    ctx.quadraticCurveTo(px-6+_pSway*0.3, py-15, px+1+_pSway*0.6, py-20);
+    ctx.quadraticCurveTo(px+4+_pSway*0.2, py-12, px, py-2);
     ctx.fill();
   });
 
@@ -6518,13 +6564,16 @@ function drawRoom7() {
   ctx.strokeStyle = 'rgba(180,140,80,0.3)';
   ctx.lineWidth = 1;
   ctx.stroke();
-  // Warm lamp glow (radial gradient)
-  const glowG = ctx.createRadialGradient(327, 278, 5, 327, 285, 60);
-  glowG.addColorStop(0, 'rgba(255,235,180,0.25)');
-  glowG.addColorStop(0.5, 'rgba(255,220,150,0.1)');
+  // Warm lamp glow (animated pulse)
+  const _lampT7 = window._t || 0;
+  const _lampPulse = 0.22 + 0.04 * Math.sin(_lampT7 * 1.2) + 0.02 * Math.sin(_lampT7 * 3.4);
+  const _lampR = 58 + 4 * Math.sin(_lampT7 * 0.8);
+  const glowG = ctx.createRadialGradient(327, 278, 5, 327, 285, _lampR);
+  glowG.addColorStop(0, `rgba(255,235,180,${_lampPulse})`);
+  glowG.addColorStop(0.5, `rgba(255,220,150,${_lampPulse*0.4})`);
   glowG.addColorStop(1, 'rgba(255,200,100,0)');
   ctx.fillStyle = glowG;
-  ctx.beginPath(); ctx.arc(327, 285, 60, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(327, 285, _lampR + 2, 0, Math.PI * 2); ctx.fill();
 
   // --- Writing desk (right side ~x600-780) ---
   const deskG = ctx.createLinearGradient(0, 315, 0, 335);
@@ -6775,15 +6824,10 @@ function drawPool() {
   ctx.fillStyle = skyG;
   ctx.fillRect(0, 0, 960, 120);
 
-  // Sky clouds
-  ctx.fillStyle = 'rgba(255,255,255,0.5)';
-  ctx.beginPath(); ctx.arc(100, 30, 20, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(120, 25, 26, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(145, 32, 18, 0, Math.PI * 2); ctx.fill();
-  ctx.fillStyle = 'rgba(255,255,255,0.35)';
-  ctx.beginPath(); ctx.arc(750, 20, 22, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(775, 16, 28, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(800, 22, 18, 0, Math.PI * 2); ctx.fill();
+  // Sky clouds (detailed, drifting)
+  drawDetailedCloud(120, 28, 0.9, true);
+  drawDetailedCloud(770, 18, 1.0, false);
+  drawDetailedCloud(450, 35, 0.5, false);
 
   // --- Hotel building backdrop ---
   const bldgG = ctx.createLinearGradient(0, 20, 0, 200);
@@ -6972,6 +7016,14 @@ function drawPool() {
   ctx.fillText('NO DIVING', 461, 202);
 
   // --- Giant inflatable flamingo ---
+  // Flamingo gentle bob on water
+  const _flamT = window._t || 0;
+  const _flamBob = Math.sin(_flamT * 0.8) * 1.5;
+  const _flamRock = Math.sin(_flamT * 0.5) * 0.02;
+  ctx.save();
+  ctx.translate(385, 285 + _flamBob);
+  ctx.rotate(_flamRock);
+  ctx.translate(-385, -285);
   // Water shadow under flamingo
   ctx.fillStyle = 'rgba(20,80,100,0.15)';
   ctx.beginPath(); ctx.ellipse(385, 310, 50, 12, 0, 0, Math.PI * 2); ctx.fill();
@@ -7071,6 +7123,8 @@ function drawPool() {
   // Eye (visible behind glasses)
   ctx.fillStyle = '#111';
   ctx.beginPath(); ctx.arc(345, 216, 1.5, 0, Math.PI * 2); ctx.fill();
+
+  ctx.restore(); // end flamingo bob transform
 
   // --- Rubber duck floating in pool (animated bobbing + gentle drift) ---
   const _duckT = window._t || 0;
@@ -7518,7 +7572,9 @@ function drawNonnaRosa(x, y) {
   ctx.fillStyle = 'rgba(0,0,0,0.08)';
   ctx.fillRect(x - 5, y + 20, 10, 4);
 
-  // ── Gold cross necklace ──
+  // ── Gold cross necklace (animated gentle sway + sparkle) ──
+  const _crossT = window._t || 0;
+  const _crossSway = Math.sin(_crossT * 1.0) * 0.6;
   ctx.strokeStyle = '#daa520';
   ctx.lineWidth = 1.5;
   ctx.beginPath();
@@ -7526,10 +7582,19 @@ function drawNonnaRosa(x, y) {
   ctx.bezierCurveTo(x - 4, y + 22, x + 4, y + 22, x + 6, y + 16);
   ctx.stroke();
   ctx.fillStyle = '#daa520';
-  ctx.fillRect(x - 1.2, y + 20, 2.5, 8);
-  ctx.fillRect(x - 3.5, y + 23, 7, 2.5);
+  ctx.fillRect(x - 1.2 + _crossSway, y + 20, 2.5, 8);
+  ctx.fillRect(x - 3.5 + _crossSway, y + 23, 7, 2.5);
   ctx.fillStyle = 'rgba(255,230,140,0.5)';
-  ctx.fillRect(x - 0.5, y + 21, 1, 6);
+  ctx.fillRect(x - 0.5 + _crossSway, y + 21, 1, 6);
+  // Cross sparkle
+  const _crossGlint = Math.max(0, Math.sin(_crossT * 4.0));
+  if (_crossGlint > 0.95) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.fillStyle = `rgba(255,250,180,${(_crossGlint - 0.95) * 15})`;
+    ctx.beginPath(); ctx.arc(x + _crossSway, y + 24, 3, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
 
   // ── Head ──
   const headGrad = ctx.createRadialGradient(x - 2, y - 4, 2, x, y, 18);
@@ -7607,19 +7672,26 @@ function drawNonnaRosa(x, y) {
   ctx.beginPath(); ctx.ellipse(x - 7, y - 13, 2.5, 1.5, -0.3, 0, Math.PI * 2); ctx.fill();
   ctx.beginPath(); ctx.ellipse(x + 5, y - 13, 2.5, 1.5, -0.3, 0, Math.PI * 2); ctx.fill();
 
-  // ── Eyes — dark, warm, fierce ──
-  ctx.fillStyle = '#f5f0e8';
-  ctx.beginPath(); ctx.ellipse(x - 6, y, 4, 3.2, 0, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.ellipse(x + 6, y, 4, 3.2, 0, 0, Math.PI * 2); ctx.fill();
-  ctx.fillStyle = '#2a1a0a';
-  ctx.beginPath(); ctx.arc(x - 5.5, y + 0.3, 2.5, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x + 6.5, y + 0.3, 2.5, 0, Math.PI * 2); ctx.fill();
-  ctx.fillStyle = '#000000';
-  ctx.beginPath(); ctx.arc(x - 5.5, y + 0.3, 1.2, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x + 6.5, y + 0.3, 1.2, 0, Math.PI * 2); ctx.fill();
-  ctx.fillStyle = 'rgba(255,255,255,0.7)';
-  ctx.beginPath(); ctx.arc(x - 4.5, y - 0.5, 0.8, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x + 7.5, y - 0.5, 0.8, 0, Math.PI * 2); ctx.fill();
+  // ── Eyes — dark, warm, fierce (animated blink) ──
+  const _nonnaBlink = ((window._t||0) * 0.28 + 3.0) % 6;
+  if (_nonnaBlink > 5.88) {
+    ctx.fillStyle = '#c8a080';
+    ctx.beginPath(); ctx.ellipse(x - 6, y, 4, 1.2, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(x + 6, y, 4, 1.2, 0, 0, Math.PI * 2); ctx.fill();
+  } else {
+    ctx.fillStyle = '#f5f0e8';
+    ctx.beginPath(); ctx.ellipse(x - 6, y, 4, 3.2, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(x + 6, y, 4, 3.2, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#2a1a0a';
+    ctx.beginPath(); ctx.arc(x - 5.5, y + 0.3, 2.5, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(x + 6.5, y + 0.3, 2.5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#000000';
+    ctx.beginPath(); ctx.arc(x - 5.5, y + 0.3, 1.2, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(x + 6.5, y + 0.3, 1.2, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.beginPath(); ctx.arc(x - 4.5, y - 0.5, 0.8, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(x + 7.5, y - 0.5, 0.8, 0, Math.PI * 2); ctx.fill();
+  }
   ctx.strokeStyle = '#8a6a4a';
   ctx.lineWidth = 1.2;
   ctx.beginPath(); ctx.moveTo(x - 10, y - 0.5); ctx.bezierCurveTo(x - 8, y - 3, x - 3, y - 3, x - 1.5, y - 0.5); ctx.stroke();
@@ -7864,18 +7936,27 @@ function drawVilla() {
   ctx.fillStyle = '#fff';
   [140,175,215,255,285].forEach((jfy,i) => { const jfx=707+Math.sin(i*1.5)*6; for(let p=0;p<5;p++){const pa=(p/5)*Math.PI*2; ctx.beginPath(); ctx.ellipse(jfx+Math.cos(pa)*3,jfy+Math.sin(pa)*3,2,1,pa,0,Math.PI*2); ctx.fill();} ctx.fillStyle='#eedd44'; ctx.beginPath(); ctx.arc(jfx,jfy,1,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#fff'; });
 
-  // ══════ CLOTHES LINE with laundry ══════
+  // ══════ CLOTHES LINE with laundry (animated flutter) ══════
+  const _clothT = window._t || 0;
   ctx.strokeStyle = '#888'; ctx.lineWidth = 2;
   ctx.beginPath(); ctx.moveTo(810, 60); ctx.lineTo(810, 130); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(930, 70); ctx.lineTo(930, 140); ctx.stroke();
   ctx.strokeStyle = '#aaa'; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(810, 65); ctx.bezierCurveTo(840, 72, 900, 72, 930, 68); ctx.stroke();
+  const _lineWave = Math.sin(_clothT * 1.2) * 1.5;
+  ctx.beginPath(); ctx.moveTo(810, 65); ctx.bezierCurveTo(840, 72 + _lineWave, 900, 72 - _lineWave, 930, 68); ctx.stroke();
+  // White sheet (fluttering)
+  const _sheetF = Math.sin(_clothT * 2.2) * 2 + Math.sin(_clothT * 3.5) * 1;
   ctx.fillStyle = '#f8f5f0';
-  ctx.beginPath(); ctx.moveTo(830,66); ctx.bezierCurveTo(832,80,828,100,832,112); ctx.lineTo(855,112); ctx.bezierCurveTo(857,100,853,80,855,66); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(830,66); ctx.bezierCurveTo(832+_sheetF,80,828-_sheetF,100,832+_sheetF*0.5,112); ctx.lineTo(855,112); ctx.bezierCurveTo(857-_sheetF*0.5,100,853+_sheetF,80,855-_sheetF,66); ctx.closePath(); ctx.fill();
+  // Red towel (fluttering with offset)
+  const _towelF = Math.sin(_clothT * 2.5 + 1.0) * 1.5 + Math.sin(_clothT * 3.8 + 0.5) * 0.8;
   ctx.fillStyle = '#cc3030';
-  ctx.beginPath(); ctx.moveTo(870,68); ctx.bezierCurveTo(872,78,868,90,872,100); ctx.lineTo(885,100); ctx.bezierCurveTo(887,90,883,78,885,68); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(870,68); ctx.bezierCurveTo(872+_towelF,78,868-_towelF,90,872+_towelF*0.5,100); ctx.lineTo(885,100); ctx.bezierCurveTo(887-_towelF*0.5,90,883+_towelF,78,885-_towelF,68); ctx.closePath(); ctx.fill();
+  // Blue shirt (fluttering with different phase)
+  const _shirtF = Math.sin(_clothT * 1.8 + 2.0) * 2 + Math.sin(_clothT * 3.1 + 1.5) * 1;
   ctx.fillStyle = '#4488bb';
-  ctx.beginPath(); ctx.moveTo(898,69); ctx.bezierCurveTo(895,82,893,95,895,115); ctx.lineTo(918,118); ctx.bezierCurveTo(920,95,918,82,920,69); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(898,69); ctx.bezierCurveTo(895+_shirtF,82,893-_shirtF,95,895+_shirtF*0.5,115); ctx.lineTo(918,118); ctx.bezierCurveTo(920-_shirtF*0.5,95,918+_shirtF,82,920-_shirtF,69); ctx.closePath(); ctx.fill();
+  // Clothespins
   ctx.fillStyle = '#c0a060';
   [[840,64],[855,64],[877,66],[905,67],[920,67]].forEach(([px,py]) => { ctx.fillRect(px-1.5,py,3,5); });
 
@@ -8591,7 +8672,9 @@ function drawDJKev(x, y) {
   ctx.beginPath(); ctx.arc(x-11, y+12, 1.5, 0, Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(x+11, y+12, 1.5, 0, Math.PI*2); ctx.fill();
 
-  // ── Oversized headphones around neck ──
+  // ── Oversized headphones around neck (animated subtle bass vibrate) ──
+  var _hpT = window._t || 0;
+  var _hpVib = Math.sin(_hpT * 12) * 0.3 * (0.5 + 0.5 * Math.sin(_hpT * 0.5));
   ctx.save();
   ctx.shadowColor = 'rgba(0,0,0,0.3)';
   ctx.shadowBlur = 3;
@@ -8603,7 +8686,7 @@ function drawDJKev(x, y) {
   hpBandGrad.addColorStop(1, '#1a1a1a');
   ctx.strokeStyle = hpBandGrad;
   ctx.lineWidth = 5;
-  ctx.beginPath(); ctx.arc(x, y+16, 19, Math.PI+0.15, -0.15); ctx.stroke();
+  ctx.beginPath(); ctx.arc(x, y+16+_hpVib, 19, Math.PI+0.15, -0.15); ctx.stroke();
   ctx.restore();
   ctx.strokeStyle = 'rgba(100,100,100,0.35)';
   ctx.lineWidth = 1.2;
@@ -9952,17 +10035,21 @@ function drawCaptainPete(x, y) {
   ctx.fillRect(x+44, y+44, 6, 2);
   ctx.fillStyle = '#ff6622';
   ctx.fillRect(x+45, y+44, 4, 1);
-  // Smoke puffs (semi-transparent, rising)
-  ctx.fillStyle = 'rgba(190,190,190,0.35)';
-  ctx.beginPath(); ctx.arc(x+47, y+38, 4, 0, Math.PI*2); ctx.fill();
-  ctx.fillStyle = 'rgba(180,180,180,0.28)';
-  ctx.beginPath(); ctx.arc(x+50, y+30, 5, 0, Math.PI*2); ctx.fill();
-  ctx.fillStyle = 'rgba(170,170,170,0.20)';
-  ctx.beginPath(); ctx.arc(x+46, y+22, 6, 0, Math.PI*2); ctx.fill();
-  ctx.fillStyle = 'rgba(160,160,160,0.13)';
-  ctx.beginPath(); ctx.arc(x+50, y+13, 7, 0, Math.PI*2); ctx.fill();
-  ctx.fillStyle = 'rgba(150,150,150,0.07)';
-  ctx.beginPath(); ctx.arc(x+45, y+3, 8, 0, Math.PI*2); ctx.fill();
+  // Pipe bowl inner ember (animated glow)
+  const _pipeT = window._t || 0;
+  const _emberPulse = 0.6 + 0.4 * Math.sin(_pipeT * 2.5);
+  ctx.fillStyle = `rgba(255,102,34,${_emberPulse})`;
+  ctx.fillRect(x+45, y+44, 4, 1);
+  // Smoke puffs (animated rising + drifting)
+  for (let sp = 0; sp < 5; sp++) {
+    const smokePhase = (_pipeT * 0.6 + sp * 0.9) % 3.5;
+    const smokeY = y + 40 - smokePhase * 14;
+    const smokeX = x + 47 + Math.sin(_pipeT * 0.7 + sp * 1.4) * (3 + smokePhase * 2);
+    const smokeR = 3.5 + smokePhase * 1.8;
+    const smokeAlpha = Math.max(0, 0.35 - smokePhase * 0.1);
+    ctx.fillStyle = `rgba(180,180,185,${smokeAlpha})`;
+    ctx.beginPath(); ctx.arc(smokeX, smokeY, smokeR, 0, Math.PI*2); ctx.fill();
+  }
 
   // === HEAD (weathered, ruddy face) ===
   // Neck
@@ -10010,33 +10097,40 @@ function drawCaptainPete(x, y) {
   ctx.beginPath(); ctx.moveTo(x-5, y+1); ctx.quadraticCurveTo(x-8, y+6, x-8, y+10); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(x+5, y+1); ctx.quadraticCurveTo(x+8, y+6, x+8, y+10); ctx.stroke();
 
-  // Kind watery blue eyes
-  // Eye whites
-  ctx.fillStyle = '#e8e0d8';
-  ctx.beginPath(); ctx.ellipse(x-5, y-3, 4, 2.5, 0, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.ellipse(x+5, y-3, 4, 2.5, 0, 0, Math.PI*2); ctx.fill();
-  // Irises (watery blue)
-  ctx.fillStyle = '#5599bb';
-  ctx.beginPath(); ctx.arc(x-5, y-3, 2.2, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x+5, y-3, 2.2, 0, Math.PI*2); ctx.fill();
-  // Pupils
-  ctx.fillStyle = '#223344';
-  ctx.beginPath(); ctx.arc(x-5, y-3, 1, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x+5, y-3, 1, 0, Math.PI*2); ctx.fill();
-  // Eye shine (watery quality)
-  ctx.fillStyle = 'rgba(255,255,255,0.7)';
-  ctx.beginPath(); ctx.arc(x-4, y-4, 0.8, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x+6, y-4, 0.8, 0, Math.PI*2); ctx.fill();
-  // Watery eye rims
-  ctx.strokeStyle = 'rgba(180,140,120,0.4)';
-  ctx.lineWidth = 0.6;
-  ctx.beginPath(); ctx.ellipse(x-5, y-3, 4.5, 3, 0, 0, Math.PI*2); ctx.stroke();
-  ctx.beginPath(); ctx.ellipse(x+5, y-3, 4.5, 3, 0, 0, Math.PI*2); ctx.stroke();
-  // Droopy lower eyelids
-  ctx.strokeStyle = 'rgba(150,110,80,0.4)';
-  ctx.lineWidth = 0.8;
-  ctx.beginPath(); ctx.arc(x-5, y-3, 3, 0.3, 2.8); ctx.stroke();
-  ctx.beginPath(); ctx.arc(x+5, y-3, 3, 0.3, 2.8); ctx.stroke();
+  // Kind watery blue eyes (animated blink — slow, weary)
+  const _peteBlink = ((window._t||0) * 0.22 + 4.0) % 7;
+  if (_peteBlink > 6.88) {
+    ctx.fillStyle = '#c49468';
+    ctx.beginPath(); ctx.ellipse(x-5, y-3, 4, 1, 0, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(x+5, y-3, 4, 1, 0, 0, Math.PI*2); ctx.fill();
+  } else {
+    // Eye whites
+    ctx.fillStyle = '#e8e0d8';
+    ctx.beginPath(); ctx.ellipse(x-5, y-3, 4, 2.5, 0, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(x+5, y-3, 4, 2.5, 0, 0, Math.PI*2); ctx.fill();
+    // Irises (watery blue)
+    ctx.fillStyle = '#5599bb';
+    ctx.beginPath(); ctx.arc(x-5, y-3, 2.2, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(x+5, y-3, 2.2, 0, Math.PI*2); ctx.fill();
+    // Pupils
+    ctx.fillStyle = '#223344';
+    ctx.beginPath(); ctx.arc(x-5, y-3, 1, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(x+5, y-3, 1, 0, Math.PI*2); ctx.fill();
+    // Eye shine (watery quality)
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.beginPath(); ctx.arc(x-4, y-4, 0.8, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(x+6, y-4, 0.8, 0, Math.PI*2); ctx.fill();
+    // Watery eye rims
+    ctx.strokeStyle = 'rgba(180,140,120,0.4)';
+    ctx.lineWidth = 0.6;
+    ctx.beginPath(); ctx.ellipse(x-5, y-3, 4.5, 3, 0, 0, Math.PI*2); ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(x+5, y-3, 4.5, 3, 0, 0, Math.PI*2); ctx.stroke();
+    // Droopy lower eyelids
+    ctx.strokeStyle = 'rgba(150,110,80,0.4)';
+    ctx.lineWidth = 0.8;
+    ctx.beginPath(); ctx.arc(x-5, y-3, 3, 0.3, 2.8); ctx.stroke();
+    ctx.beginPath(); ctx.arc(x+5, y-3, 3, 0.3, 2.8); ctx.stroke();
+  }
 
   // === BUSHY EYEBROWS (thick, grey, wild) ===
   ctx.fillStyle = '#999999';
@@ -10343,23 +10437,30 @@ function drawLighthouse() {
     ctx.fillRect(fwx, fwy, 12 + (fw % 5) * 4, 1);
   }
 
-  // Distant sailboat silhouette on horizon
+  // Distant sailboat silhouette on horizon (animated gentle rock)
+  const _sailT = window._t || 0;
+  const _sailRock = Math.sin(_sailT * 0.6) * 0.03;
+  const _sailBob = Math.sin(_sailT * 0.9) * 0.8;
+  ctx.save();
+  ctx.translate(840, 192 + _sailBob);
+  ctx.rotate(_sailRock);
   ctx.fillStyle = 'rgba(60,30,20,0.4)';
   // Hull
   ctx.beginPath();
-  ctx.moveTo(830, 192);
-  ctx.quadraticCurveTo(838, 196, 850, 192);
-  ctx.quadraticCurveTo(838, 194, 830, 192);
+  ctx.moveTo(-10, 0);
+  ctx.quadraticCurveTo(-2, 4, 10, 0);
+  ctx.quadraticCurveTo(-2, 2, -10, 0);
   ctx.fill();
   // Mast
-  ctx.fillRect(839, 178, 1.5, 14);
+  ctx.fillRect(-1, -14, 1.5, 14);
   // Sail
   ctx.beginPath();
-  ctx.moveTo(840, 179);
-  ctx.lineTo(840, 190);
-  ctx.lineTo(848, 188);
+  ctx.moveTo(0, -13);
+  ctx.lineTo(0, -2);
+  ctx.lineTo(8, -4);
   ctx.closePath();
   ctx.fill();
+  ctx.restore();
 
   // === ROCKY CLIFF with detailed formation ===
   // Main rock mass
@@ -10442,30 +10543,33 @@ function drawLighthouse() {
     [850,304,'#ff69b4'],[900,308,'#cc77dd'],[420,294,'#ff8866'],
     [560,296,'#dd88cc'],[740,294,'#ffcc55']
   ];
-  flowerClusters.forEach(([fx, fy, fc]) => {
-    // Stem
+  const _wfT = window._t || 0;
+  flowerClusters.forEach(([fx, fy, fc], fi) => {
+    // Animated gentle sway
+    const _wfSway = Math.sin(_wfT * 1.5 + fi * 1.3) * 2 + Math.sin(_wfT * 2.3 + fi * 0.7) * 1;
+    // Stem (swaying)
     ctx.strokeStyle = '#2a8830';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(fx, fy + 10);
-    ctx.quadraticCurveTo(fx - 2, fy + 5, fx, fy + 2);
+    ctx.quadraticCurveTo(fx - 2 + _wfSway * 0.3, fy + 5, fx + _wfSway, fy + 2);
     ctx.stroke();
-    // Small leaf
+    // Small leaf (moving with stem)
     ctx.fillStyle = '#33aa44';
     ctx.beginPath();
-    ctx.ellipse(fx + 3, fy + 6, 3, 1.5, 0.4, 0, Math.PI * 2);
+    ctx.ellipse(fx + 3 + _wfSway * 0.5, fy + 6, 3, 1.5, 0.4 + _wfSway * 0.02, 0, Math.PI * 2);
     ctx.fill();
-    // Flower petals
+    // Flower petals (at swayed position)
     ctx.fillStyle = fc;
     for (let p = 0; p < 5; p++) {
       const pa = (p / 5) * Math.PI * 2;
       ctx.beginPath();
-      ctx.arc(fx + Math.cos(pa) * 2.5, fy + Math.sin(pa) * 2.5, 2, 0, Math.PI * 2);
+      ctx.arc(fx + _wfSway + Math.cos(pa) * 2.5, fy + Math.sin(pa) * 2.5, 2, 0, Math.PI * 2);
       ctx.fill();
     }
     // Flower center
     ctx.fillStyle = '#ffee66';
-    ctx.beginPath(); ctx.arc(fx, fy, 1.5, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(fx + _wfSway, fy, 1.5, 0, Math.PI * 2); ctx.fill();
   });
 
   // === LIGHTHOUSE (candy-striped, substantial, beautiful) ===
