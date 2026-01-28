@@ -3922,7 +3922,13 @@ function drawHotel() {
   ctx.fillStyle = 'rgba(0,0,0,0.08)';
   ctx.beginPath(); ctx.ellipse(110, 377, 58, 4, 0, 0, Math.PI * 2); ctx.fill();
 
-  // === Flamingo statue ===
+  // === Flamingo statue (very subtle wobble) ===
+  const _fStatT = window._t || 0;
+  const _fStatWob = Math.sin(_fStatT * 0.4) * 0.008;
+  ctx.save();
+  ctx.translate(375, 148);
+  ctx.rotate(_fStatWob);
+  ctx.translate(-375, -148);
   ctx.fillStyle = '#c8c0b0';
   ctx.fillRect(365, 148, 20, 8);
   ctx.fillStyle = '#b0a898';
@@ -3968,6 +3974,7 @@ function drawHotel() {
   ctx.fillStyle = '#222222';
   ctx.fillRect(374, 61, 8, 3);
   ctx.fillRect(372, 62, 2, 1);
+  ctx.restore(); // end flamingo statue wobble
 
   // === Travel poster ===
   ctx.fillStyle = '#c8a060';
@@ -6791,14 +6798,16 @@ function drawRoom7() {
   ctx.strokeStyle = 'rgba(255,255,255,0.2)';
   ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(630, 295); ctx.lineTo(630, 315); ctx.stroke();
-  // Flower stems
+  // Flower stems (animated gentle sway)
+  const _flwT = window._t || 0;
+  const _flwSway = Math.sin(_flwT * 1.2) * 1.5;
   ctx.strokeStyle = '#3a8a3a';
   ctx.lineWidth = 1.5;
-  ctx.beginPath(); ctx.moveTo(632, 290); ctx.lineTo(628, 265); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(634, 290); ctx.lineTo(638, 260); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(633, 290); ctx.lineTo(633, 258); ctx.stroke();
-  // Flowers
-  for (const [fx, fy, fc] of [[628,265,'#ff6688'],[638,260,'#ff88aa'],[633,258,'#ee5577']]) {
+  ctx.beginPath(); ctx.moveTo(632, 290); ctx.quadraticCurveTo(630 + _flwSway * 0.3, 278, 628 + _flwSway, 265); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(634, 290); ctx.quadraticCurveTo(636 + _flwSway * 0.2, 275, 638 + _flwSway * 0.8, 260); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(633, 290); ctx.quadraticCurveTo(633 + _flwSway * 0.4, 274, 633 + _flwSway * 0.6, 258); ctx.stroke();
+  // Flowers (swaying with stems)
+  for (const [fx, fy, fc] of [[628 + _flwSway,265,'#ff6688'],[638 + _flwSway * 0.8,260,'#ff88aa'],[633 + _flwSway * 0.6,258,'#ee5577']]) {
     ctx.fillStyle = fc;
     for (let p = 0; p < 5; p++) {
       const a = p * Math.PI * 2 / 5;
@@ -7532,19 +7541,22 @@ function drawPool() {
   drawEnhancedPalmTree(30, 80, 0.55);
   drawEnhancedPalmTree(920, 60, 0.55);
 
-  // --- Potted plants ---
+  // --- Potted plants (animated gentle sway) ---
+  const _ppT = window._t || 0;
+  const _ppSway1 = Math.sin(_ppT * 1.0) * 1.5;
+  const _ppSway2 = Math.sin(_ppT * 1.2 + 2.0) * 1.5;
   // Left potted plant
   ctx.fillStyle = '#8a5a2a';
   ctx.fillRect(160, 420, 30, 30);
   ctx.fillStyle = '#a06830';
   ctx.fillRect(156, 416, 38, 6);
-  // Plant
+  // Plant (swaying)
   ctx.fillStyle = '#2a8a2a';
-  ctx.beginPath(); ctx.arc(168, 410, 10, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(182, 408, 8, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(175, 402, 11, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(168 + _ppSway1 * 0.5, 410, 10, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(182 + _ppSway1 * 0.3, 408, 8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(175 + _ppSway1, 402, 11, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = '#3aaa3a';
-  ctx.beginPath(); ctx.arc(172, 405, 6, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(172 + _ppSway1 * 0.7, 405, 6, 0, Math.PI * 2); ctx.fill();
 
   // Right potted plant
   ctx.fillStyle = '#8a5a2a';
@@ -7552,11 +7564,11 @@ function drawPool() {
   ctx.fillStyle = '#a06830';
   ctx.fillRect(897, 427, 32, 5);
   ctx.fillStyle = '#2a8a2a';
-  ctx.beginPath(); ctx.arc(908, 420, 9, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(920, 418, 8, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(914, 412, 10, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(908 + _ppSway2 * 0.4, 420, 9, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(920 + _ppSway2 * 0.3, 418, 8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(914 + _ppSway2, 412, 10, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = '#3aaa3a';
-  ctx.beginPath(); ctx.arc(912, 416, 5, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(912 + _ppSway2 * 0.6, 416, 5, 0, Math.PI * 2); ctx.fill();
 
   // --- Doorway hints ---
   ctx.fillStyle = '#cc8888';
