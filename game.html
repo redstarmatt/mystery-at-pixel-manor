@@ -5133,11 +5133,21 @@ function drawTown() {
   ctx.fillRect(338, 105, 8, 14);
   ctx.fillStyle = '#eebb33';
   ctx.fillRect(339, 107, 6, 10);
-  // Beer foam
+  // Beer foam (animated fizz)
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(338, 104, 8, 4);
   ctx.beginPath(); ctx.arc(340, 104, 2, 0, Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(344, 104, 2, 0, Math.PI*2); ctx.fill();
+  // Rising fizz bubbles
+  const _beerT = window._t || 0;
+  for (let fb = 0; fb < 4; fb++) {
+    const _fbPhase = (_beerT * 0.8 + fb * 0.7) % 2.0;
+    const _fbY = 118 - _fbPhase * 8;
+    const _fbX = 340 + Math.sin(_beerT * 2 + fb * 2.1) * 2 + fb * 1.5;
+    const _fbAlpha = Math.max(0, 0.4 - _fbPhase * 0.2);
+    ctx.fillStyle = `rgba(255,255,220,${_fbAlpha})`;
+    ctx.beginPath(); ctx.arc(_fbX, _fbY, 0.8 + (_fbPhase < 0.5 ? _fbPhase * 0.6 : 0.3), 0, Math.PI*2); ctx.fill();
+  }
   // Glass handle
   ctx.strokeStyle = '#cccccc';
   ctx.lineWidth = 1.5;
@@ -6071,8 +6081,15 @@ function drawCove() {
     ctx.fill();
   });
 
-  // === BEACHED ROWBOAT ===
+  // === BEACHED ROWBOAT (subtle rocking) ===
   drawGroundShadow(700, 420, 90);
+  const _boatT = window._t || 0;
+  const _boatRock = Math.sin(_boatT * 0.7) * 0.015;
+  const _boatBob = Math.sin(_boatT * 0.5) * 0.5;
+  ctx.save();
+  ctx.translate(705, 405 + _boatBob);
+  ctx.rotate(_boatRock);
+  ctx.translate(-705, -405);
   // Hull
   ctx.fillStyle = '#8B6B4A';
   ctx.beginPath();
@@ -6121,6 +6138,7 @@ function drawCove() {
   ctx.lineWidth = 1.5;
   ctx.beginPath(); ctx.arc(670, 398, 5, 0, Math.PI*1.7); ctx.stroke();
   ctx.beginPath(); ctx.arc(670, 398, 3, 0.5, Math.PI*1.5); ctx.stroke();
+  ctx.restore(); // end rowboat rocking
 
   // === DRIFTWOOD ===
   ctx.strokeStyle = '#b0967a';
@@ -8114,6 +8132,16 @@ function drawVilla() {
   ctx.fillStyle='#e8e3d8'; ctx.beginPath(); ctx.ellipse(tableX+11,tableY+1,12,3,0,0,Math.PI*2); ctx.fill();
   ctx.fillStyle='rgba(140,80,20,0.5)'; ctx.beginPath(); ctx.ellipse(tableX+11,tableY-6,5,1.5,0,0,Math.PI*2); ctx.fill();
   ctx.strokeStyle='#4488aa'; ctx.lineWidth=0.7; ctx.beginPath(); ctx.ellipse(tableX+11,tableY-7,6,1.8,0,0,Math.PI*2); ctx.stroke();
+  // Tea steam wisps
+  const _steamT = window._t || 0;
+  for (let sw = 0; sw < 3; sw++) {
+    const _swPhase = (_steamT * 0.5 + sw * 1.1) % 2.5;
+    const _swY = tableY - 8 - _swPhase * 10;
+    const _swX = tableX + 11 + Math.sin(_steamT * 1.5 + sw * 2.0) * 3;
+    const _swAlpha = Math.max(0, 0.2 - _swPhase * 0.08);
+    ctx.fillStyle = `rgba(255,255,255,${_swAlpha})`;
+    ctx.beginPath(); ctx.ellipse(_swX, _swY, 1.5 + _swPhase * 0.8, 1 + _swPhase * 0.3, 0, 0, Math.PI*2); ctx.fill();
+  }
   // Chairs
   const ch1x=55,ch1y=308; ctx.strokeStyle='#2a2a2a'; ctx.lineWidth=1.5;
   ctx.fillStyle='#333'; ctx.beginPath(); ctx.ellipse(ch1x,ch1y+8,14,5,0,0,Math.PI*2); ctx.fill();
@@ -9170,30 +9198,33 @@ function drawArcade() {
   }
   ctx.stroke();
 
-  // Light bulbs with glow halos
+  // Light bulbs with glow halos (animated per-bulb flicker)
   var lightColors = ['#ff4444','#ffcc00','#44ff44','#4488ff','#ff44ff','#ff8833','#44ffcc'];
+  var _slT = window._t || 0;
   for (var lx2 = 20; lx2 < 960; lx2 += 40) {
     var lc = lightColors[(lx2 / 40 | 0) % lightColors.length];
+    var _bulbIdx = lx2 / 40 | 0;
+    var _flick = 0.85 + 0.15 * Math.sin(_slT * (2.5 + _bulbIdx * 0.7) + _bulbIdx * 1.9);
     // Outer glow halo
     ctx.save();
-    ctx.globalAlpha = 0.18;
+    ctx.globalAlpha = 0.18 * _flick;
     ctx.fillStyle = lc;
     ctx.beginPath(); ctx.arc(lx2, 61, 18, 0, Math.PI*2); ctx.fill();
-    ctx.globalAlpha = 1.0;
+    ctx.globalAlpha = _flick;
     ctx.shadowColor = lc;
-    ctx.shadowBlur = 14;
+    ctx.shadowBlur = 14 * _flick;
     ctx.fillStyle = lc;
     ctx.beginPath(); ctx.arc(lx2, 61, 3.5, 0, Math.PI*2); ctx.fill();
     ctx.restore();
     // Soft glow circle
     ctx.save();
-    ctx.globalAlpha = 0.08;
+    ctx.globalAlpha = 0.08 * _flick;
     ctx.fillStyle = lc;
     ctx.beginPath(); ctx.arc(lx2, 61, 15, 0, Math.PI*2); ctx.fill();
     ctx.restore();
     // Bright center
     ctx.fillStyle = '#ffffff';
-    ctx.globalAlpha = 0.55;
+    ctx.globalAlpha = 0.55 * _flick;
     ctx.beginPath(); ctx.arc(lx2, 60.5, 1.8, 0, Math.PI*2); ctx.fill();
     ctx.globalAlpha = 1.0;
     // Socket
@@ -10467,24 +10498,25 @@ function drawLighthouse() {
     ctx.beginPath(); ctx.moveTo(sx, sy-crossLen); ctx.lineTo(sx, sy+crossLen); ctx.stroke();
   });
 
-  // Thin horizontal cloud bands catching sunset light
+  // Thin horizontal cloud bands catching sunset light (animated slow drift)
+  const _lhCloudT = window._t || 0;
   for (let ci = 0; ci < 7; ci++) {
     const cy = 30 + ci * 22;
     const cAlpha = 0.06 + (ci * 0.02);
     const cWidth = 120 + (ci * 40) % 200;
-    const cxStart = (ci * 170 + 50) % 700;
+    const _cDrift = (_lhCloudT * (1.5 + ci * 0.3) + ci * 170 + 50) % (960 + cWidth) - cWidth;
     ctx.fillStyle = `rgba(80,20,30,${cAlpha})`;
     ctx.beginPath();
-    ctx.moveTo(cxStart, cy);
-    ctx.quadraticCurveTo(cxStart + cWidth * 0.5, cy - 3, cxStart + cWidth, cy);
-    ctx.quadraticCurveTo(cxStart + cWidth * 0.5, cy + 3, cxStart, cy);
+    ctx.moveTo(_cDrift, cy);
+    ctx.quadraticCurveTo(_cDrift + cWidth * 0.5, cy - 3, _cDrift + cWidth, cy);
+    ctx.quadraticCurveTo(_cDrift + cWidth * 0.5, cy + 3, _cDrift, cy);
     ctx.fill();
     // Warm highlight on bottom edge of cloud
     ctx.strokeStyle = `rgba(255,180,100,${cAlpha * 0.7})`;
     ctx.lineWidth = 0.8;
     ctx.beginPath();
-    ctx.moveTo(cxStart + 10, cy + 2);
-    ctx.quadraticCurveTo(cxStart + cWidth * 0.5, cy + 4, cxStart + cWidth - 10, cy + 2);
+    ctx.moveTo(_cDrift + 10, cy + 2);
+    ctx.quadraticCurveTo(_cDrift + cWidth * 0.5, cy + 4, _cDrift + cWidth - 10, cy + 2);
     ctx.stroke();
   }
 
