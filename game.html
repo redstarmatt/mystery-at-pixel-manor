@@ -2559,8 +2559,25 @@ function drawBeach() {
   ctx.moveTo(700, 180); ctx.lineTo(650, 295); ctx.lineTo(870, 295); ctx.lineTo(820, 180);
   ctx.fill();
 
+  // Screen soft light bloom on ocean sun reflection strip
+  ctx.save();
+  ctx.globalCompositeOperation = 'screen';
+  ctx.fillStyle = 'rgba(255,240,200,0.08)';
+  ctx.beginPath();
+  ctx.moveTo(700, 180); ctx.lineTo(650, 295); ctx.lineTo(870, 295); ctx.lineTo(820, 180);
+  ctx.fill();
+  ctx.restore();
+
   // Beach sand — rich textured
   drawRichSand(0, 288, 960, 192);
+
+  // Multiply shadow overlay on sand under palm trees
+  ctx.save();
+  ctx.globalCompositeOperation = 'multiply';
+  ctx.fillStyle = 'rgba(180,160,120,0.3)';
+  ctx.beginPath(); ctx.ellipse(70, 380, 80, 20, 0.3, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(900, 360, 50, 14, -0.2, 0, Math.PI*2); ctx.fill();
+  ctx.restore();
 
   drawEnhancedShoreline(290);
 
@@ -3472,6 +3489,16 @@ function drawHotel() {
   ctx.fillStyle = 'rgba(255,255,255,0.04)';
   ctx.fillRect(100, 390, 760, 40);
 
+  // Multiply ambient occlusion darkening in room corners
+  ctx.save();
+  ctx.globalCompositeOperation = 'multiply';
+  const _htlAO = ctx.createRadialGradient(480, 240, 200, 480, 240, 500);
+  _htlAO.addColorStop(0, 'rgba(255,255,255,1)');
+  _htlAO.addColorStop(1, 'rgba(200,180,160,0.6)');
+  ctx.fillStyle = _htlAO;
+  ctx.fillRect(0, 0, 960, 480);
+  ctx.restore();
+
   // === Red carpet runner ===
   const carpet = ctx.createLinearGradient(400, 0, 560, 0);
   carpet.addColorStop(0, '#8b1a1a');
@@ -3561,6 +3588,13 @@ function drawHotel() {
   drawLightGlow(480, 420, 200, `rgba(255,240,200,${_floorGlowAlpha})`);
   // Secondary warm glow on walls
   drawLightGlow(480, 200, 300, 'rgba(255,230,180,0.04)');
+
+  // Screen warm glow on chandelier light pool area
+  ctx.save();
+  ctx.globalCompositeOperation = 'screen';
+  ctx.fillStyle = 'rgba(255,240,200,0.06)';
+  ctx.fillRect(380, 360, 200, 120);
+  ctx.restore();
 
   // === Ornate mirror with gilt frame ===
   ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.35)'; ctx.shadowBlur = 10; ctx.shadowOffsetX = 3; ctx.shadowOffsetY = 4;
@@ -4244,6 +4278,16 @@ function drawTikiBar() {
     ctx.lineTo(fx + 4, 82); ctx.closePath(); ctx.fill();
   }
 
+  // Multiply shadow under thatched roof overhang
+  ctx.save();
+  ctx.globalCompositeOperation = 'multiply';
+  const _roofShade = ctx.createLinearGradient(0, 82, 0, 140);
+  _roofShade.addColorStop(0, 'rgba(160,130,80,0.4)');
+  _roofShade.addColorStop(1, 'rgba(255,255,255,1)');
+  ctx.fillStyle = _roofShade;
+  ctx.fillRect(0, 82, 960, 58);
+  ctx.restore();
+
   // Light rays filtering through thatch roof gaps (animated)
   const _rayT = window._t || 0;
   ctx.save();
@@ -4911,6 +4955,13 @@ function drawTikiBar() {
   ctx.beginPath(); ctx.arc(440, 92, 4, 0, Math.PI * 2); ctx.fill();
   ctx.beginPath(); ctx.arc(640, 92, 4, 0, Math.PI * 2); ctx.fill();
 
+  // Overlay warm color wash for tropical mood
+  ctx.save();
+  ctx.globalCompositeOperation = 'overlay';
+  ctx.fillStyle = 'rgba(255,200,120,0.04)';
+  ctx.fillRect(0, 0, 960, 480);
+  ctx.restore();
+
   enhanceScene('indoor');
 }
 
@@ -4935,6 +4986,12 @@ function drawTown() {
   sky.addColorStop(1, '#aaddee');
   ctx.fillStyle = sky;
   ctx.fillRect(0, 0, 960, 160);
+
+  ctx.save();
+  ctx.globalCompositeOperation = 'screen';
+  ctx.fillStyle = 'rgba(200,230,255,0.04)';
+  ctx.fillRect(0, 0, 960, 150);
+  ctx.restore();
 
   // Wispy high clouds
   drawDetailedCloud(120, 30, 1.1);
@@ -5360,6 +5417,12 @@ function drawTown() {
       ctx.stroke();
     }
   }
+
+  ctx.save();
+  ctx.globalCompositeOperation = 'multiply';
+  ctx.fillStyle = 'rgba(180,170,150,0.15)';
+  ctx.fillRect(0, 360, 960, 120);
+  ctx.restore();
 
   // === MARKET STALL ===
   // Stall back wall
@@ -5934,6 +5997,13 @@ function drawCove() {
   ctx.fillStyle = sunG;
   ctx.beginPath(); ctx.arc(480, 185, 55, 0, Math.PI*2); ctx.fill();
 
+  // Screen bloom on sunset sun disc
+  ctx.save();
+  ctx.globalCompositeOperation = 'screen';
+  ctx.fillStyle = 'rgba(255,240,200,0.15)';
+  ctx.beginPath(); ctx.arc(480, 185, 70, 0, Math.PI*2); ctx.fill();
+  ctx.restore();
+
   // Sun edge glow (pulsing)
   const _sunPulseT = window._t || 0;
   const _sunPulse = 0.4 + 0.15 * Math.sin(_sunPulseT * 0.8);
@@ -6377,6 +6447,13 @@ function drawCove() {
   ctx.fillStyle = vigR;
   ctx.fillRect(760, 0, 200, 480);
 
+  // Overlay warm sunset color wash over the whole scene
+  ctx.save();
+  ctx.globalCompositeOperation = 'overlay';
+  ctx.fillStyle = 'rgba(255,160,80,0.03)';
+  ctx.fillRect(0, 0, 960, 480);
+  ctx.restore();
+
   enhanceScene('outdoor');
 }
 
@@ -6475,6 +6552,16 @@ function drawRoom7() {
   ctx.fillStyle = 'rgba(255,240,220,0.08)';
   ctx.fillRect(0, 380, 960, 15);
 
+  // Multiply ambient occlusion at corners/edges
+  ctx.save();
+  ctx.globalCompositeOperation = 'multiply';
+  const _r7AO = ctx.createRadialGradient(450, 240, 180, 450, 240, 500);
+  _r7AO.addColorStop(0, 'rgba(255,255,255,1)');
+  _r7AO.addColorStop(1, 'rgba(200,170,150,0.5)');
+  ctx.fillStyle = _r7AO;
+  ctx.fillRect(0, 0, 960, 480);
+  ctx.restore();
+
   // --- Large window (center) ---
   // Gold curtain rod with finials
   const rodG = ctx.createLinearGradient(320, 42, 320, 54);
@@ -6560,6 +6647,16 @@ function drawRoom7() {
   ctx.fillRect(365, 236, 170, 12);
   ctx.fillStyle = 'rgba(0,0,0,0.1)';
   ctx.fillRect(365, 248, 170, 2);
+
+  // Screen window light glow
+  ctx.save();
+  ctx.globalCompositeOperation = 'screen';
+  const _r7WinGlow = ctx.createRadialGradient(450, 150, 20, 450, 250, 200);
+  _r7WinGlow.addColorStop(0, 'rgba(200,230,255,0.1)');
+  _r7WinGlow.addColorStop(1, 'rgba(200,230,255,0)');
+  ctx.fillStyle = _r7WinGlow;
+  ctx.fillRect(300, 50, 300, 300);
+  ctx.restore();
 
   // Flowing red curtains (left) - animated wind flutter
   const _r7t = window._t || 0;
@@ -7221,6 +7318,13 @@ function drawPool() {
   // Sun reflection on pool
   drawLightGlow(420, 300, 150, 'rgba(180,240,255,0.06)');
 
+  // Screen bright reflection on pool water surface
+  ctx.save();
+  ctx.globalCompositeOperation = 'screen';
+  ctx.fillStyle = 'rgba(150,220,255,0.06)';
+  ctx.fillRect(210, 218, 530, 40);
+  ctx.restore();
+
   // --- Pool edge trim ---
   const edgeG = ctx.createLinearGradient(0, 205, 0, 218);
   edgeG.addColorStop(0, '#d8d4cc');
@@ -7234,6 +7338,13 @@ function drawPool() {
   // Edge shadow
   ctx.fillStyle = 'rgba(0,0,0,0.08)';
   ctx.fillRect(203, 215, 544, 3);
+
+  // Multiply shadow under pool edge coping
+  ctx.save();
+  ctx.globalCompositeOperation = 'multiply';
+  ctx.fillStyle = 'rgba(180,200,210,0.15)';
+  ctx.fillRect(195, 415, 560, 8);
+  ctx.restore();
 
   // --- Pool ladder (left side of pool) ---
   ctx.strokeStyle = '#c0c0c0';
@@ -8144,6 +8255,11 @@ function drawVilla() {
   const sunHL = ctx.createLinearGradient(200, 70, 320, 70);
   sunHL.addColorStop(0, 'rgba(255,255,220,0.12)'); sunHL.addColorStop(1, 'rgba(255,255,220,0)');
   ctx.fillStyle = sunHL; ctx.fillRect(200, 70, 120, 250);
+  ctx.save();
+  ctx.globalCompositeOperation = 'screen';
+  ctx.fillStyle = 'rgba(255,240,200,0.05)';
+  ctx.fillRect(200, 70, 200, 250);
+  ctx.restore();
   const eaveShade = ctx.createLinearGradient(200, 70, 200, 90);
   eaveShade.addColorStop(0, 'rgba(0,0,0,0.1)'); eaveShade.addColorStop(1, 'rgba(0,0,0,0)');
   ctx.fillStyle = eaveShade; ctx.fillRect(200, 70, 550, 20);
@@ -8540,6 +8656,12 @@ function drawVilla() {
   ctx.fillStyle = 'rgba(255,255,255,0.6)';
   ctx.font = '8px "Press Start 2P", monospace';
   ctx.fillText('\u2190 Walk back to town', 10, 470);
+
+  ctx.save();
+  ctx.globalCompositeOperation = 'overlay';
+  ctx.fillStyle = 'rgba(255,220,180,0.03)';
+  ctx.fillRect(0, 0, 960, 480);
+  ctx.restore();
 
   ctx.restore();
 
@@ -9144,6 +9266,15 @@ function drawArcade() {
     ctx.stroke();
   }
 
+  ctx.save();
+  ctx.globalCompositeOperation = 'multiply';
+  const _arcDim = ctx.createRadialGradient(480, 300, 150, 480, 300, 480);
+  _arcDim.addColorStop(0, 'rgba(255,255,255,1)');
+  _arcDim.addColorStop(1, 'rgba(140,120,150,0.4)');
+  ctx.fillStyle = _arcDim;
+  ctx.fillRect(0, 0, 960, 480);
+  ctx.restore();
+
   // ================================================================
   // FLOOR: Polished wooden floor with reflections
   // ================================================================
@@ -9194,6 +9325,15 @@ function drawArcade() {
   floorShadow.addColorStop(1, 'rgba(0,0,0,0)');
   ctx.fillStyle = floorShadow;
   ctx.fillRect(0, 365, 960, 20);
+
+  ctx.save();
+  ctx.globalCompositeOperation = 'screen';
+  const _arcNeonRefl = ctx.createLinearGradient(0, 420, 0, 480);
+  _arcNeonRefl.addColorStop(0, 'rgba(255,50,200,0.03)');
+  _arcNeonRefl.addColorStop(1, 'rgba(50,200,255,0.02)');
+  ctx.fillStyle = _arcNeonRefl;
+  ctx.fillRect(0, 420, 960, 60);
+  ctx.restore();
 
   // ================================================================
   // NEON SIGN: "VINYL IS FINAL" - dramatic pink/magenta glow
@@ -10752,6 +10892,12 @@ function drawLighthouse() {
   ctx.globalAlpha = 1.0;
   ctx.restore();
 
+  ctx.save();
+  ctx.globalCompositeOperation = 'screen';
+  ctx.fillStyle = 'rgba(255,220,150,0.08)';
+  ctx.beginPath(); ctx.arc(700, 178, 100, 0, Math.PI*2); ctx.fill();
+  ctx.restore();
+
   // === OCEAN with sunset reflections ===
   const ocean = ctx.createLinearGradient(0, 190, 0, 310);
   ocean.addColorStop(0, '#cc6633');
@@ -11419,6 +11565,12 @@ function drawLighthouse() {
   vignette.addColorStop(1, 'rgba(20,10,5,0.15)');
   ctx.fillStyle = vignette;
   ctx.fillRect(0, 0, 960, 480);
+
+  ctx.save();
+  ctx.globalCompositeOperation = 'overlay';
+  ctx.fillStyle = 'rgba(255,140,60,0.04)';
+  ctx.fillRect(0, 0, 960, 480);
+  ctx.restore();
 
   enhanceScene('outdoor');
 }
