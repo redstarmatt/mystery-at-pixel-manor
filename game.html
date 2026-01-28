@@ -2639,12 +2639,15 @@ function drawBeach() {
   // Bus trim
   ctx.fillStyle = '#ffaacc';
   ctx.fillRect(790, 175, 150, 4);
-  // Bus windows with reflections
+  // Bus windows with animated traveling reflections
+  const _busRefT = window._t || 0;
   for (let bw = 0; bw < 4; bw++) {
     ctx.fillStyle = '#88ccdd';
     ctx.fillRect(800 + bw * 35, 148, 25, 22);
+    // Animated reflection sweep
+    const _refX = ((_busRefT * 8 + bw * 12) % 40) - 8;
     ctx.fillStyle = 'rgba(255,255,255,0.3)';
-    ctx.fillRect(800 + bw * 35, 148, 8, 22);
+    ctx.fillRect(800 + bw * 35 + Math.max(0, Math.min(_refX, 17)), 148, 8, 22);
     ctx.fillStyle = '#6699aa';
     ctx.fillRect(800 + bw * 35, 148, 25, 2);
   }
@@ -2692,9 +2695,13 @@ function drawBeach() {
   ctx.fillRect(350, 382, 80, 2);
   ctx.fillRect(350, 390, 80, 2);
   ctx.fillRect(350, 398, 80, 2);
-  // Towel fringe
+  // Towel fringe (animated flutter)
+  const _twFT = window._t || 0;
   ctx.fillStyle = '#ff5577';
-  for (let f = 0; f < 10; f++) { ctx.fillRect(350 + f*8, 409, 4, 4); }
+  for (let f = 0; f < 10; f++) {
+    const _fFlut = Math.sin(_twFT * 2.5 + f * 0.8) * 0.8;
+    ctx.fillRect(350 + f*8 + _fFlut, 409, 4, 4);
+  }
 
   // Sandcastle
   ctx.fillStyle = '#ddcc99';
@@ -2703,11 +2710,18 @@ function drawBeach() {
   ctx.fillRect(592, 408, 16, 14);
   ctx.fillRect(588, 406, 6, 4);
   ctx.fillRect(600, 406, 6, 4);
-  // Tiny flag on sandcastle
+  // Tiny flag on sandcastle (animated flutter)
+  const _scFlagT = window._t || 0;
   ctx.fillStyle = '#8B6914';
   ctx.fillRect(600, 392, 2, 16);
+  const _scFlutter = Math.sin(_scFlagT * 4) * 1.5 + Math.sin(_scFlagT * 6.5) * 0.5;
   ctx.fillStyle = '#ff4466';
-  ctx.fillRect(602, 392, 8, 6);
+  ctx.beginPath();
+  ctx.moveTo(602, 392);
+  ctx.lineTo(610 + _scFlutter, 393 + _scFlutter * 0.2);
+  ctx.lineTo(610 + _scFlutter * 0.5, 395 + _scFlutter * 0.1);
+  ctx.lineTo(602, 398);
+  ctx.closePath(); ctx.fill();
   // Moat
   ctx.strokeStyle = 'rgba(100,180,200,0.3)';
   ctx.lineWidth = 2;
@@ -2936,8 +2950,14 @@ function drawDaphne(x, y) {
   ctx.fillStyle = '#996622';
   ctx.fillRect(x-8, y+118, 2, 5);
   ctx.fillRect(x+7, y+118, 2, 5);
-  // Hibiscus flower in hair
-  drawDetailedFlower(x-12, y-10, '#ff6699', '#ffdd44', 1.2);
+  // Hibiscus flower in hair (animated gentle sway)
+  ctx.save();
+  const _hibT = window._t || 0;
+  const _hibSway = Math.sin(_hibT * 1.5) * 0.08;
+  ctx.translate(x-12, y-10);
+  ctx.rotate(_hibSway);
+  drawDetailedFlower(0, 0, '#ff6699', '#ffdd44', 1.2);
+  ctx.restore();
   // Subtle romantic glow around Daphne
   drawLightGlow(x, y+40, 80, 'rgba(255,220,180,0.05)');
   ctx.restore();
@@ -3163,15 +3183,26 @@ function drawBro(x, y, color) {
   ctx.fillStyle = '#886633';
   ctx.beginPath(); ctx.arc(x+2, y+1, 12, Math.PI+0.15, -0.15); ctx.fill();
 
-  // Hair gel shine streaks (comically glossy)
-  ctx.strokeStyle = 'rgba(255,240,200,0.35)';
+  // Hair gel shine streaks (animated traveling gleam)
+  const _gelT = window._t || 0;
+  const _gelPhase = (_gelT * 0.3) % 2.5;
+  const _gelAlpha1 = 0.25 + 0.15 * Math.sin(_gelT * 1.5);
+  ctx.strokeStyle = `rgba(255,240,200,${_gelAlpha1})`;
   ctx.lineWidth = 1.5;
   ctx.lineCap = 'round';
   ctx.beginPath(); ctx.moveTo(x-6, y-4); ctx.quadraticCurveTo(x, y-7, x+8, y-3); ctx.stroke();
-  ctx.strokeStyle = 'rgba(255,240,200,0.25)';
+  const _gelAlpha2 = 0.15 + 0.12 * Math.sin(_gelT * 1.5 + 1.0);
+  ctx.strokeStyle = `rgba(255,240,200,${_gelAlpha2})`;
   ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(x-4, y-2); ctx.quadraticCurveTo(x+2, y-5, x+10, y-1); ctx.stroke();
-  // Another shine streak
+  // Animated sparkle point on gel
+  if (_gelPhase < 0.3) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.fillStyle = `rgba(255,255,230,${(0.3 - _gelPhase) * 2.5})`;
+    ctx.beginPath(); ctx.arc(x + _gelPhase * 30 - 4, y - 5 + _gelPhase * 4, 2, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
   ctx.strokeStyle = 'rgba(255,255,230,0.3)';
   ctx.lineWidth = 0.8;
   ctx.beginPath(); ctx.moveTo(x-2, y-5); ctx.quadraticCurveTo(x+3, y-8, x+6, y-5); ctx.stroke();
@@ -3448,10 +3479,12 @@ function drawHotel() {
   ctx.strokeStyle = '#daa520';
   ctx.lineWidth = 2;
   ctx.strokeRect(413, 375, 134, 105);
-  // Carpet fringe at bottom
+  // Carpet fringe at bottom (animated flutter)
+  const _cfT = window._t || 0;
   ctx.fillStyle = '#daa520';
   for (let cf = 414; cf < 546; cf += 6) {
-    ctx.fillRect(cf, 477, 3, 3);
+    const _cfSway = Math.sin(_cfT * 2.5 + cf * 0.12) * 0.8;
+    ctx.fillRect(cf + _cfSway, 477, 3, 3);
   }
   // Carpet shadow beneath edges
   ctx.fillStyle = 'rgba(0,0,0,0.08)';
@@ -4091,14 +4124,17 @@ function drawTikiBar() {
   sky.addColorStop(1, '#99ddee');
   ctx.fillStyle = sky;
   ctx.fillRect(0, 0, 960, 160);
-  // Wispy clouds
+  // Wispy clouds (animated drift)
+  const _tikiCloudT = window._t || 0;
   ctx.save();
   ctx.globalAlpha = 0.25;
   ctx.fillStyle = '#ffffff';
-  ctx.beginPath(); ctx.ellipse(200, 40, 60, 12, 0, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.ellipse(220, 35, 40, 8, 0.2, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.ellipse(700, 55, 50, 10, -0.1, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.ellipse(730, 50, 35, 7, 0, 0, Math.PI * 2); ctx.fill();
+  const _tcD1 = (_tikiCloudT * 3 + 200) % 1060 - 50;
+  const _tcD2 = (_tikiCloudT * 2 + 700) % 1060 - 50;
+  ctx.beginPath(); ctx.ellipse(_tcD1, 40, 60, 12, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(_tcD1 + 20, 35, 40, 8, 0.2, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(_tcD2, 55, 50, 10, -0.1, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(_tcD2 + 30, 50, 35, 7, 0, 0, Math.PI * 2); ctx.fill();
   ctx.restore();
 
   // === Thatched roof with depth and layering ===
@@ -4232,10 +4268,12 @@ function drawTikiBar() {
   ctx.fillRect(195, 345, 3, 135);
   ctx.fillRect(802, 345, 3, 135);
 
-  // === Surfboard leaning against wall (left side) ===
+  // === Surfboard leaning against wall (animated subtle rock) ===
+  const _surfT = window._t || 0;
+  const _surfRock = Math.sin(_surfT * 0.4) * 0.008;
   ctx.save();
   ctx.translate(145, 140);
-  ctx.rotate(0.12);
+  ctx.rotate(0.12 + _surfRock);
   // Board body
   const boardGrad = ctx.createLinearGradient(0, 0, 25, 0);
   boardGrad.addColorStop(0, '#2299cc');
@@ -4345,6 +4383,20 @@ function drawTikiBar() {
     ctx.fillRect(b.x + 1, by, 3, b.h);
   });
 
+  // Animated bottle glow/shimmer
+  var _botGlowT = window._t || 0;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  bottleData.forEach(function(b, i) {
+    var _bGlow = Math.max(0, Math.sin(_botGlowT * 1.5 + i * 1.8) - 0.88);
+    if (_bGlow > 0) {
+      var by = i < 5 ? 158 - b.h : 225 - b.h;
+      ctx.fillStyle = 'rgba(255,255,240,' + (_bGlow * 6) + ')';
+      ctx.fillRect(b.x + 1, by, 3, b.h);
+    }
+  });
+  ctx.restore();
+
   // === Bar counter with bamboo detail ===
   var counterGrad = ctx.createLinearGradient(0, 272, 0, 312);
   counterGrad.addColorStop(0, '#7a4a20');
@@ -4377,20 +4429,26 @@ function drawTikiBar() {
   ctx.fillStyle = 'rgba(0,0,0,0.10)';
   ctx.beginPath(); ctx.ellipse(475, 316, 235, 5, 0, 0, Math.PI * 2); ctx.fill();
 
-  // === Tropical drinks on counter ===
+  // === Tropical drinks on counter (animated umbrella spin) ===
+  var _drinkT = window._t || 0;
   ctx.fillStyle = '#ff6688';
   ctx.beginPath();
   ctx.moveTo(302, 268); ctx.lineTo(296, 248); ctx.lineTo(316, 248); ctx.lineTo(310, 268);
   ctx.closePath(); ctx.fill();
   ctx.fillStyle = 'rgba(255,255,255,0.2)';
   ctx.fillRect(298, 250, 3, 16);
+  // Spinning cocktail umbrella
+  ctx.save();
+  ctx.translate(306, 241);
+  ctx.rotate(Math.sin(_drinkT * 0.5) * 0.15);
   ctx.fillStyle = '#ffcc00';
   ctx.beginPath();
-  ctx.moveTo(306, 248); ctx.lineTo(316, 238); ctx.lineTo(296, 238);
+  ctx.moveTo(0, 7); ctx.lineTo(10, -3); ctx.lineTo(-10, -3);
   ctx.closePath(); ctx.fill();
   ctx.strokeStyle = '#aa8800';
   ctx.lineWidth = 0.8;
-  ctx.beginPath(); ctx.moveTo(306, 248); ctx.lineTo(306, 235); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0, 7); ctx.lineTo(0, -6); ctx.stroke();
+  ctx.restore();
   ctx.strokeStyle = '#cc2244';
   ctx.lineWidth = 1.5;
   ctx.beginPath(); ctx.moveTo(300, 248); ctx.lineTo(294, 232); ctx.stroke();
@@ -5129,9 +5187,22 @@ function drawTown() {
   for (let gy = 0; gy < 4; gy++) {
     ctx.beginPath(); ctx.moveTo(463, 110+gy*14); ctx.lineTo(507, 110+gy*14); ctx.stroke();
   }
-  // Rose window top glow
-  ctx.fillStyle = 'rgba(255,200,100,0.15)';
+  // Rose window top glow (animated pulse)
+  const _sgT = window._t || 0;
+  const _sgPulse = 0.12 + 0.06 * Math.sin(_sgT * 0.8);
+  ctx.fillStyle = `rgba(255,200,100,${_sgPulse})`;
   ctx.beginPath(); ctx.arc(485, 120, 20, Math.PI, 0); ctx.fill();
+  // Animated glow on stained glass panels
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  for (let gy = 0; gy < 3; gy++) {
+    for (let gx = 0; gx < 3; gx++) {
+      const _panelGlow = 0.03 + 0.03 * Math.sin(_sgT * 0.6 + gy * 1.5 + gx * 2.0);
+      ctx.fillStyle = `rgba(255,255,200,${_panelGlow})`;
+      ctx.fillRect(467 + gx*13, 110 + gy*14, 11, 12);
+    }
+  }
+  ctx.restore();
   // Clock face
   ctx.fillStyle = '#fffde8';
   ctx.beginPath(); ctx.arc(485, 78, 14, 0, Math.PI*2); ctx.fill();
@@ -5975,19 +6046,20 @@ function drawCove() {
   ctx.bezierCurveTo(930, 195, 900, 210, 880, 235);
   ctx.bezierCurveTo(860, 260, 830, 290, 825, 320);
   ctx.stroke();
-  // Plants on right rocks
-  [[925, 215], [895, 245], [875, 290], [910, 370], [940, 400]].forEach(([px, py]) => {
+  // Plants on right rocks (animated sway)
+  [[925, 215], [895, 245], [875, 290], [910, 370], [940, 400]].forEach(([px, py], pi) => {
+    const _rpSway = Math.sin(_covePlantT * 1.3 + pi * 1.7 + 2.0) * 2.5 + Math.sin(_covePlantT * 2.0 + pi * 0.9) * 1.2;
     ctx.fillStyle = '#33aa44';
     ctx.beginPath();
     ctx.moveTo(px, py);
-    ctx.quadraticCurveTo(px+10, py-22, px-2, py-30);
-    ctx.quadraticCurveTo(px-6, py-18, px, py);
+    ctx.quadraticCurveTo(px+10+_rpSway*0.4, py-22, px-2+_rpSway, py-30);
+    ctx.quadraticCurveTo(px-6+_rpSway*0.2, py-18, px, py);
     ctx.fill();
     ctx.fillStyle = '#22aa33';
     ctx.beginPath();
     ctx.moveTo(px-2, py);
-    ctx.quadraticCurveTo(px-12, py-20, px-5, py-28);
-    ctx.quadraticCurveTo(px-14, py-14, px-2, py);
+    ctx.quadraticCurveTo(px-12+_rpSway*0.3, py-20, px-5+_rpSway*0.7, py-28);
+    ctx.quadraticCurveTo(px-14+_rpSway*0.15, py-14, px-2, py);
     ctx.fill();
   });
 
@@ -6058,7 +6130,8 @@ function drawCove() {
   ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(305, 419); ctx.lineTo(365, 421); ctx.stroke();
 
-  // === DETAILED SEASHELLS ===
+  // === DETAILED SEASHELLS (with shimmer) ===
+  const _shellT = window._t || 0;
   // Conch shell
   ctx.fillStyle = '#ffe0cc';
   ctx.beginPath();
@@ -6105,6 +6178,17 @@ function drawCove() {
     ctx.lineWidth = 0.5;
     ctx.stroke();
   });
+  // Shell shimmer overlay
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  [[726,390,5],[745,396,6],[765,390,4],[680,415,3],[688,412,3]].forEach(([sx,sy,sr], si) => {
+    const _shGlint = Math.max(0, Math.sin(_shellT * 1.2 + si * 1.8) - 0.85);
+    if (_shGlint > 0) {
+      ctx.fillStyle = `rgba(255,240,220,${_shGlint * 5})`;
+      ctx.beginPath(); ctx.arc(sx, sy, sr, 0, Math.PI * 2); ctx.fill();
+    }
+  });
+  ctx.restore();
 
   // === DAPHNE at water's edge ===
   drawDaphne(450, 230);
@@ -6756,11 +6840,13 @@ function drawRoom7() {
   ctx.beginPath();
   ctx.ellipse(170, 408, 60, 18, 0, 0, Math.PI * 2);
   ctx.stroke();
-  // Rug fringe
+  // Rug fringe (animated flutter)
+  const _rugFT = window._t || 0;
   ctx.strokeStyle = 'rgba(180,60,90,0.3)';
   for (let rx = 85; rx < 256; rx += 6) {
     const ry = 408 + Math.sqrt(Math.max(0, 1 - ((rx - 170) / 90) ** 2)) * 30;
-    ctx.beginPath(); ctx.moveTo(rx, ry); ctx.lineTo(rx, ry + 5); ctx.stroke();
+    const _rfSway = Math.sin(_rugFT * 1.5 + rx * 0.08) * 0.6;
+    ctx.beginPath(); ctx.moveTo(rx, ry); ctx.lineTo(rx + _rfSway, ry + 5); ctx.stroke();
   }
 
   // --- Minibar (right wall) ---
@@ -7004,6 +7090,18 @@ function drawPool() {
   ctx.fillStyle = '#d0d0d0';
   ctx.beginPath(); ctx.arc(230, 196, 4, 0, Math.PI * 2); ctx.fill();
   ctx.beginPath(); ctx.arc(250, 196, 4, 0, Math.PI * 2); ctx.fill();
+  // Animated metallic shine traveling down ladder
+  const _ladT = window._t || 0;
+  const _ladShine = ((_ladT * 0.3) % 2.0);
+  if (_ladShine < 1.0) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    const shineY = 196 + _ladShine * 64;
+    ctx.fillStyle = 'rgba(255,255,255,0.2)';
+    ctx.fillRect(228, shineY, 5, 3);
+    ctx.fillRect(248, shineY, 5, 3);
+    ctx.restore();
+  }
 
   // --- "NO DIVING" sign ---
   ctx.fillStyle = '#ffffff';
@@ -7157,7 +7255,9 @@ function drawPool() {
     ctx.beginPath(); ctx.ellipse(500 + _duckDrift, 345 + _duckBob, rippleR, 4 + ripplePhase, 0, 0, Math.PI * 2); ctx.stroke();
   }
 
-  // --- Diving board ---
+  // --- Diving board (animated subtle flex) ---
+  const _divT = window._t || 0;
+  const _divFlex = Math.sin(_divT * 1.2) * 1;
   // Support column
   const dcG = ctx.createLinearGradient(456, 172, 468, 172);
   dcG.addColorStop(0, '#b0b0b0');
@@ -7165,19 +7265,31 @@ function drawPool() {
   dcG.addColorStop(1, '#a8a8a8');
   ctx.fillStyle = dcG;
   ctx.fillRect(458, 172, 10, 38);
-  // Board
+  // Board (with flex at tip)
   const dbG = ctx.createLinearGradient(0, 188, 0, 200);
   dbG.addColorStop(0, '#e0e0e0');
   dbG.addColorStop(0.5, '#cccccc');
   dbG.addColorStop(1, '#b8b8b8');
   ctx.fillStyle = dbG;
-  ctx.fillRect(455, 190, 85, 8);
+  ctx.beginPath();
+  ctx.moveTo(455, 190);
+  ctx.lineTo(455, 198);
+  ctx.lineTo(540, 198 + _divFlex);
+  ctx.lineTo(540, 190 + _divFlex);
+  ctx.closePath();
+  ctx.fill();
   // Non-slip surface
   ctx.fillStyle = '#3a88cc';
-  ctx.fillRect(500, 190, 38, 8);
+  ctx.beginPath();
+  ctx.moveTo(500, 190 + _divFlex * 0.5);
+  ctx.lineTo(500, 198 + _divFlex * 0.5);
+  ctx.lineTo(538, 198 + _divFlex);
+  ctx.lineTo(538, 190 + _divFlex);
+  ctx.closePath();
+  ctx.fill();
   // Board tip
   ctx.fillStyle = 'rgba(255,255,255,0.3)';
-  ctx.fillRect(534, 190, 4, 8);
+  ctx.fillRect(534, 190 + _divFlex, 4, 8);
   // Shadow under board
   ctx.fillStyle = 'rgba(0,0,0,0.1)';
   ctx.fillRect(458, 198, 80, 3);
@@ -7542,10 +7654,12 @@ function drawNonnaRosa(x, y) {
   ctx.ellipse(x - 28, y + 42, 5, 4.5, -0.2, 0, Math.PI * 2);
   ctx.fill();
 
-  // ── Wooden spoon in right hand ──
+  // ── Wooden spoon in right hand (animated subtle waggle) ──
+  const _spoonT = window._t || 0;
+  const _spoonWag = Math.sin(_spoonT * 1.5) * 0.06;
   ctx.save();
   ctx.translate(x + 30, y + 36);
-  ctx.rotate(-0.4);
+  ctx.rotate(-0.4 + _spoonWag);
   const spoonGrad = ctx.createLinearGradient(0, 0, 4, 0);
   spoonGrad.addColorStop(0, '#a07830');
   spoonGrad.addColorStop(0.5, '#c09040');
@@ -7920,12 +8034,15 @@ function drawVilla() {
   ctx.beginPath(); ctx.moveTo(520, 75); ctx.bezierCurveTo(510, 100, 505, 140, 510, 185); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(440, 75); ctx.bezierCurveTo(460, 85, 500, 85, 520, 75); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(740, 72); ctx.bezierCurveTo(735, 110, 730, 150, 728, 200); ctx.stroke();
-  [{cx:215,cy:85},{cx:225,cy:110},{cx:220,cy:140},{cx:230,cy:170},{cx:225,cy:200},{cx:222,cy:240},{cx:240,cy:100},{cx:250,cy:120},{cx:235,cy:155},{cx:445,cy:82},{cx:460,cy:88},{cx:475,cy:82},{cx:490,cy:86},{cx:505,cy:82},{cx:515,cy:88},{cx:450,cy:110},{cx:455,cy:140},{cx:458,cy:170},{cx:510,cy:110},{cx:508,cy:140},{cx:505,cy:170},{cx:465,cy:95},{cx:498,cy:95},{cx:738,cy:88},{cx:735,cy:120},{cx:732,cy:150},{cx:730,cy:185},{cx:736,cy:100}].forEach(cl => {
+  const _bougT = window._t || 0;
+  [{cx:215,cy:85},{cx:225,cy:110},{cx:220,cy:140},{cx:230,cy:170},{cx:225,cy:200},{cx:222,cy:240},{cx:240,cy:100},{cx:250,cy:120},{cx:235,cy:155},{cx:445,cy:82},{cx:460,cy:88},{cx:475,cy:82},{cx:490,cy:86},{cx:505,cy:82},{cx:515,cy:88},{cx:450,cy:110},{cx:455,cy:140},{cx:458,cy:170},{cx:510,cy:110},{cx:508,cy:140},{cx:505,cy:170},{cx:465,cy:95},{cx:498,cy:95},{cx:738,cy:88},{cx:735,cy:120},{cx:732,cy:150},{cx:730,cy:185},{cx:736,cy:100}].forEach((cl,ci) => {
+    // Animated gentle sway
+    const _bSway = Math.sin(_bougT * 1.0 + ci * 0.4) * 1.5;
     ctx.fillStyle = '#1a7030';
-    for (let l = 0; l < 4; l++) { const la = (l/4)*Math.PI*2+cl.cx*0.1; ctx.beginPath(); ctx.ellipse(cl.cx+Math.cos(la)*7,cl.cy+Math.sin(la)*5,4,2,la,0,Math.PI*2); ctx.fill(); }
+    for (let l = 0; l < 4; l++) { const la = (l/4)*Math.PI*2+cl.cx*0.1; ctx.beginPath(); ctx.ellipse(cl.cx+Math.cos(la)*7+_bSway,cl.cy+Math.sin(la)*5,4,2,la,0,Math.PI*2); ctx.fill(); }
     const numBracts = 3 + (cl.cx*7+cl.cy*3) % 3;
-    for (let b = 0; b < numBracts; b++) { const ba=(b/numBracts)*Math.PI*2+cl.cy*0.05,bx=cl.cx+Math.cos(ba)*5,by=cl.cy+Math.sin(ba)*4; ctx.fillStyle=(cl.cx+cl.cy+b)%2===0?'#dd2090':'#c030a0'; ctx.beginPath(); ctx.moveTo(bx,by-3); ctx.lineTo(bx-2.5,by+2); ctx.lineTo(bx+2.5,by+2); ctx.closePath(); ctx.fill(); }
-    ctx.fillStyle = '#fff8f0'; ctx.beginPath(); ctx.arc(cl.cx, cl.cy, 1.2, 0, Math.PI*2); ctx.fill();
+    for (let b = 0; b < numBracts; b++) { const ba=(b/numBracts)*Math.PI*2+cl.cy*0.05,bx=cl.cx+Math.cos(ba)*5+_bSway,by=cl.cy+Math.sin(ba)*4; ctx.fillStyle=(cl.cx+cl.cy+b)%2===0?'#dd2090':'#c030a0'; ctx.beginPath(); ctx.moveTo(bx,by-3); ctx.lineTo(bx-2.5,by+2); ctx.lineTo(bx+2.5,by+2); ctx.closePath(); ctx.fill(); }
+    ctx.fillStyle = '#fff8f0'; ctx.beginPath(); ctx.arc(cl.cx+_bSway, cl.cy, 1.2, 0, Math.PI*2); ctx.fill();
   });
 
   // ══════ CLIMBING JASMINE (right side of wall) ══════
@@ -8511,7 +8628,8 @@ function drawDJKev(x, y) {
     }
   }
 
-  // ── Dreadlocks with beads ──
+  // ── Dreadlocks with beads (animated gentle sway) ──
+  var _dreadT = window._t || 0;
   var dreadPositions = [
     {dx:-24,dy:-2,len:42,w:5.5,wave:1.5},{dx:-18,dy:1,len:48,w:5,wave:-2},
     {dx:-12,dy:4,len:52,w:4.5,wave:1.8},{dx:-6,dy:5,len:46,w:5,wave:-1.5},
@@ -8519,7 +8637,8 @@ function drawDJKev(x, y) {
     {dx:12,dy:4,len:52,w:4.5,wave:1.5},{dx:18,dy:1,len:48,w:5,wave:-2},
     {dx:24,dy:-2,len:42,w:5.5,wave:1.5}
   ];
-  dreadPositions.forEach(function(d) {
+  dreadPositions.forEach(function(d, di) {
+    var _dSway = Math.sin(_dreadT * 1.0 + di * 0.6) * 1.5;
     var dreadGrad = ctx.createLinearGradient(x+d.dx, y+d.dy, x+d.dx, y+d.dy+d.len);
     dreadGrad.addColorStop(0, '#2a1800');
     dreadGrad.addColorStop(0.3, '#1e1200');
@@ -8528,9 +8647,9 @@ function drawDJKev(x, y) {
     ctx.fillStyle = dreadGrad;
     ctx.beginPath();
     ctx.moveTo(x+d.dx - d.w/2, y+d.dy);
-    ctx.bezierCurveTo(x+d.dx-d.w/2+d.wave, y+d.dy+d.len*0.35, x+d.dx-d.w/2-d.wave*0.7, y+d.dy+d.len*0.7, x+d.dx-1, y+d.dy+d.len);
-    ctx.lineTo(x+d.dx+1, y+d.dy+d.len);
-    ctx.bezierCurveTo(x+d.dx+d.w/2-d.wave*0.7, y+d.dy+d.len*0.7, x+d.dx+d.w/2+d.wave, y+d.dy+d.len*0.35, x+d.dx+d.w/2, y+d.dy);
+    ctx.bezierCurveTo(x+d.dx-d.w/2+d.wave+_dSway*0.5, y+d.dy+d.len*0.35, x+d.dx-d.w/2-d.wave*0.7+_dSway, y+d.dy+d.len*0.7, x+d.dx-1+_dSway, y+d.dy+d.len);
+    ctx.lineTo(x+d.dx+1+_dSway, y+d.dy+d.len);
+    ctx.bezierCurveTo(x+d.dx+d.w/2-d.wave*0.7+_dSway, y+d.dy+d.len*0.7, x+d.dx+d.w/2+d.wave+_dSway*0.5, y+d.dy+d.len*0.35, x+d.dx+d.w/2, y+d.dy);
     ctx.closePath();
     ctx.fill();
     // Twist bands
@@ -8655,9 +8774,17 @@ function drawDJKev(x, y) {
   ctx.quadraticCurveTo(x+6, y+17, x, y+17);
   ctx.quadraticCurveTo(x-6, y+17, x-8, y+11);
   ctx.fill();
-  // Gold tooth
+  // Gold tooth (animated glint)
   ctx.fillStyle = '#daa520';
   ctx.fillRect(x+1, y+11, 2.5, 4);
+  var _toothGlint = Math.max(0, Math.sin(_hpT * 2.0 + 1.5) - 0.9);
+  if (_toothGlint > 0) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.fillStyle = 'rgba(255,255,200,' + (_toothGlint * 8) + ')';
+    ctx.beginPath(); ctx.arc(x+2, y+12, 2, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
   ctx.strokeStyle = 'rgba(200,200,190,0.5)';
   ctx.lineWidth = 0.4;
   for (var t = -6; t <= 6; t += 2.5) {
