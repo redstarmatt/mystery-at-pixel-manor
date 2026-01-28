@@ -1530,21 +1530,6 @@ function handleHotspot(hotspot) {
 
 // ─── ROOM SYSTEM ─────────────────────────────────────────────────
 function changeRoom(roomId) {
-  // Brief fade transition
-  if (typeof changeRoom._transitioning === 'undefined') changeRoom._transitioning = false;
-  if (!changeRoom._transitioning && currentRoom && currentRoom !== roomId) {
-    changeRoom._transitioning = true;
-    canvas.style.transition = 'opacity 0.15s ease-out';
-    canvas.style.opacity = '0';
-    setTimeout(() => {
-      changeRoom._transitioning = false;
-      changeRoom(roomId);
-      canvas.style.opacity = '1';
-      setTimeout(() => { canvas.style.transition = ''; }, 160);
-    }, 150);
-    return;
-  }
-  changeRoom._transitioning = false;
   currentRoom = roomId;
   const room = ROOMS[roomId];
   document.getElementById('room-label').textContent = room.name;
