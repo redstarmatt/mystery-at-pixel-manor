@@ -2075,48 +2075,387 @@ function drawEnhancedPalmTree(x, top, scale) {
   ctx.restore();
 }
 
+// ─── ATMOSPHERIC EFFECTS ─────────────────────────────────────────
+
+function drawMist(x, y, w, h, color, density) {
+  const t = window._t || 0;
+  ctx.save();
+  const d = density || 8;
+  for (let i = 0; i < d; i++) {
+    const mx = x + ((i * 137 + Math.sin(t * 0.15 + i * 1.3) * 80 + t * (6 + i * 2)) % (w + 200)) - 100;
+    const my = y + (i * 47) % h + Math.sin(t * 0.25 + i * 0.9) * 15;
+    const mr = 40 + (i % 5) * 20 + Math.sin(t * 0.3 + i) * 10;
+    const ma = 0.03 + 0.02 * Math.sin(t * 0.4 + i * 1.7);
+    const g = ctx.createRadialGradient(mx, my, 0, mx, my, mr);
+    g.addColorStop(0, (color || 'rgba(200,220,240,') + ma + ')');
+    g.addColorStop(0.6, (color || 'rgba(200,220,240,') + (ma * 0.4) + ')');
+    g.addColorStop(1, 'rgba(200,220,240,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(mx, my, mr, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawSmokeWisps(x, y, count, color) {
+  const t = window._t || 0;
+  ctx.save();
+  for (let i = 0; i < (count || 6); i++) {
+    const phase = (t * 12 + i * 50) % 120;
+    const sx = x + Math.sin(t * 0.8 + i * 2.1) * 8 + Math.sin(phase * 0.05) * 4;
+    const sy = y - phase;
+    const sr = 2 + phase * 0.15;
+    const sa = Math.max(0, (1 - phase / 120) * 0.12);
+    const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, sr);
+    g.addColorStop(0, (color || 'rgba(180,170,160,') + sa + ')');
+    g.addColorStop(1, 'rgba(180,170,160,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(sx, sy, sr, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawSeaSpray(x, y, w, h, intensity) {
+  const t = window._t || 0;
+  ctx.save();
+  const n = Math.floor((intensity || 1) * 25);
+  for (let i = 0; i < n; i++) {
+    const phase = (t * 30 + i * 43) % 60;
+    const sx = x + ((i * 97 + t * 15) % w);
+    const sy = y - phase * (0.5 + (i % 3) * 0.3) + Math.sin(t * 2 + i) * 4;
+    const sa = Math.max(0, (1 - phase / 60) * 0.35);
+    const sr = 1 + (1 - phase / 60) * 2;
+    ctx.fillStyle = `rgba(220,240,255,${sa})`;
+    ctx.beginPath(); ctx.arc(sx, sy, sr, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawGrassBlades(x, y, w, count, colors) {
+  const t = window._t || 0;
+  ctx.save();
+  const cols = colors || ['#2a8833', '#228828', '#33aa44', '#1f7722'];
+  for (let i = 0; i < (count || 40); i++) {
+    const gx = x + (i * 23.7) % w;
+    const gh = 8 + (i % 5) * 3;
+    const sway = Math.sin(t * 1.2 + gx * 0.03 + i * 0.4) * 3;
+    ctx.strokeStyle = cols[i % cols.length];
+    ctx.lineWidth = 1 + (i % 2) * 0.5;
+    ctx.beginPath();
+    ctx.moveTo(gx, y);
+    ctx.quadraticCurveTo(gx + sway * 0.5, y - gh * 0.5, gx + sway, y - gh);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawFallingLeaves(region, count) {
+  const t = window._t || 0;
+  ctx.save();
+  const leafColors = ['#cc8833', '#aa6622', '#dd9944', '#bb7733', '#ee8844'];
+  for (let i = 0; i < (count || 8); i++) {
+    const phase = (t * 8 + i * 73) % 200;
+    const lx = region.x + ((i * 137 + phase * 2 + Math.sin(t * 0.5 + i * 2) * 30) % region.w);
+    const ly = region.y + (phase / 200) * region.h;
+    const rot = t * 2 + i * 1.5;
+    const la = Math.max(0, 0.6 * (1 - Math.abs(phase - 100) / 100));
+    ctx.save();
+    ctx.translate(lx, ly);
+    ctx.rotate(rot);
+    ctx.scale(Math.cos(t * 1.5 + i) * 0.3 + 0.7, 1);
+    ctx.fillStyle = leafColors[i % leafColors.length];
+    ctx.globalAlpha = la;
+    ctx.beginPath();
+    ctx.moveTo(0, -3);
+    ctx.bezierCurveTo(3, -2, 4, 1, 0, 4);
+    ctx.bezierCurveTo(-4, 1, -3, -2, 0, -3);
+    ctx.fill();
+    ctx.restore();
+  }
+  ctx.restore();
+}
+
+function drawCloudShadows(groundY, h) {
+  const t = window._t || 0;
+  ctx.save();
+  ctx.globalAlpha = 0.04;
+  ctx.fillStyle = '#000000';
+  for (let i = 0; i < 3; i++) {
+    const sx = ((t * (8 + i * 3) + i * 400) % 1400) - 200;
+    const sw = 120 + i * 60;
+    ctx.beginPath();
+    ctx.ellipse(sx, groundY + h * 0.3, sw, 20 + i * 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawHeatShimmer(y, h) {
+  const t = window._t || 0;
+  ctx.save();
+  ctx.globalAlpha = 0.02;
+  for (let i = 0; i < 6; i++) {
+    const sy = y + (i / 6) * h;
+    const offset = Math.sin(t * 2 + i * 1.5) * 3;
+    ctx.fillStyle = i % 2 === 0 ? 'rgba(255,255,220,1)' : 'rgba(255,240,200,1)';
+    ctx.fillRect(0, sy + offset, 960, 3);
+  }
+  ctx.restore();
+}
+
+function drawBloom(x, y, r, color, intensity) {
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  const a = intensity || 0.15;
+  for (let p = 0; p < 3; p++) {
+    const pr = r * (1 + p * 0.5);
+    const g = ctx.createRadialGradient(x, y, 0, x, y, pr);
+    g.addColorStop(0, color || `rgba(255,255,240,${a * (1 - p * 0.3)})`);
+    g.addColorStop(0.5, `rgba(255,240,220,${a * 0.3 * (1 - p * 0.3)})`);
+    g.addColorStop(1, 'rgba(255,230,200,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(x, y, pr, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawBlowingSand(y, h) {
+  const t = window._t || 0;
+  ctx.save();
+  for (let i = 0; i < 30; i++) {
+    const sx = ((t * (20 + i * 3) + i * 97) % 1100) - 70;
+    const sy = y + (i * 31) % h + Math.sin(t * 2 + i) * 3;
+    const sa = 0.08 + 0.06 * Math.sin(t * 3 + i * 1.7);
+    ctx.fillStyle = `rgba(220,200,160,${sa})`;
+    ctx.fillRect(sx, sy, 3 + (i % 4), 1);
+  }
+  ctx.restore();
+}
+
+function drawWaveBreak(x, y, w, phase) {
+  const t = window._t || 0;
+  const p = phase || 0;
+  const cycle = (t * 0.3 + p) % 3;
+  ctx.save();
+  if (cycle < 1.5) {
+    const progress = cycle / 1.5;
+    const foamW = w * progress;
+    const foamH = 4 * (1 - progress * 0.5);
+    ctx.fillStyle = `rgba(255,255,255,${0.3 * (1 - progress)})`;
+    ctx.beginPath();
+    ctx.ellipse(x + w / 2, y, foamW / 2, foamH, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Spray droplets
+    for (let s = 0; s < 5; s++) {
+      const dx = (s - 2) * foamW * 0.15;
+      const dy = -progress * 8 * (1 + Math.sin(s * 1.5)) + Math.sin(t * 3 + s) * 2;
+      ctx.fillStyle = `rgba(255,255,255,${0.25 * (1 - progress)})`;
+      ctx.beginPath(); ctx.arc(x + w / 2 + dx, y + dy, 1.5 * (1 - progress), 0, Math.PI * 2); ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
+function drawAuroraGlow(y, h) {
+  const t = window._t || 0;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  const colors = [
+    [100, 255, 150], [80, 200, 255], [150, 100, 255], [200, 150, 255]
+  ];
+  for (let i = 0; i < 4; i++) {
+    const ax = 100 + i * 220 + Math.sin(t * 0.2 + i * 1.5) * 60;
+    const ay = y + Math.sin(t * 0.3 + i * 0.8) * h * 0.3;
+    const aw = 150 + Math.sin(t * 0.15 + i) * 40;
+    const ah = h * 0.6 + Math.sin(t * 0.25 + i * 1.2) * 20;
+    const c = colors[i];
+    const a = 0.02 + 0.015 * Math.sin(t * 0.5 + i * 2);
+    const g = ctx.createRadialGradient(ax, ay, 0, ax, ay, Math.max(aw, ah));
+    g.addColorStop(0, `rgba(${c[0]},${c[1]},${c[2]},${a})`);
+    g.addColorStop(0.5, `rgba(${c[0]},${c[1]},${c[2]},${a * 0.3})`);
+    g.addColorStop(1, `rgba(${c[0]},${c[1]},${c[2]},0)`);
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.ellipse(ax, ay, aw, ah, 0, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawEmbers(x, y, count) {
+  const t = window._t || 0;
+  ctx.save();
+  for (let i = 0; i < (count || 10); i++) {
+    const phase = (t * 15 + i * 37) % 80;
+    const ex = x + Math.sin(t * 1.2 + i * 2.3) * 25 + Math.sin(phase * 0.1) * 10;
+    const ey = y - phase * 0.7;
+    const ea = Math.max(0, (1 - phase / 80) * 0.7);
+    const er = 1 + (1 - phase / 80);
+    const g = ctx.createRadialGradient(ex, ey, 0, ex, ey, er * 3);
+    g.addColorStop(0, `rgba(255,200,50,${ea})`);
+    g.addColorStop(0.4, `rgba(255,120,20,${ea * 0.5})`);
+    g.addColorStop(1, 'rgba(255,80,0,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(ex, ey, er * 3, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawStarField(count, brightness) {
+  const t = window._t || 0;
+  ctx.save();
+  for (let i = 0; i < (count || 50); i++) {
+    const sx = (i * 197 + 30) % 960;
+    const sy = (i * 83 + 10) % 180;
+    const sr = 0.5 + (i % 4) * 0.3;
+    const twinkle = 0.3 + 0.7 * Math.max(0, Math.sin(t * (1 + i * 0.3) + i * 2.7));
+    const alpha = (brightness || 0.5) * twinkle * (0.3 + sr * 0.2);
+    ctx.fillStyle = `rgba(255,255,240,${alpha})`;
+    ctx.beginPath(); ctx.arc(sx, sy, sr * (0.7 + 0.3 * twinkle), 0, Math.PI * 2); ctx.fill();
+    if (sr > 1 && twinkle > 0.7) {
+      const cl = sr * 2 * twinkle;
+      ctx.strokeStyle = `rgba(255,255,220,${alpha * 0.4})`;
+      ctx.lineWidth = 0.3;
+      ctx.beginPath(); ctx.moveTo(sx - cl, sy); ctx.lineTo(sx + cl, sy); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(sx, sy - cl); ctx.lineTo(sx, sy + cl); ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+
+function drawLensFlare(sx, sy, intensity) {
+  const t = window._t || 0;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  const a = (intensity || 0.15) * (0.85 + 0.15 * Math.sin(t * 0.7));
+  // Main flare
+  const dx = 480 - sx, dy = 240 - sy;
+  const spots = [0.2, 0.35, 0.5, 0.65, 0.8];
+  const sizes = [12, 8, 18, 6, 10];
+  const colors = [
+    [255, 200, 100], [200, 255, 200], [100, 200, 255], [255, 150, 200], [255, 255, 150]
+  ];
+  spots.forEach((p, i) => {
+    const fx = sx + dx * p;
+    const fy = sy + dy * p;
+    const fr = sizes[i] * (0.8 + 0.2 * Math.sin(t * 1.5 + i));
+    const c = colors[i];
+    const g = ctx.createRadialGradient(fx, fy, 0, fx, fy, fr);
+    g.addColorStop(0, `rgba(${c[0]},${c[1]},${c[2]},${a * 0.3})`);
+    g.addColorStop(1, `rgba(${c[0]},${c[1]},${c[2]},0)`);
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(fx, fy, fr, 0, Math.PI * 2); ctx.fill();
+  });
+  // Anamorphic streak
+  ctx.fillStyle = `rgba(255,240,200,${a * 0.08})`;
+  ctx.fillRect(0, sy - 2, 960, 4);
+  ctx.restore();
+}
+
+// ─── SCENE POST-PROCESSING ─────────────────────────────────────
 function enhanceScene(type) {
   const t = window._t || 0;
+  const room = currentRoom || '';
 
-  // Floating dust/pollen particles (animated)
-  if (type === 'outdoor' || type === 'beach') {
+  // ── Per-room atmospheric particles ──
+  if (type === 'beach') {
+    drawFloatingParticles({x: 50, y: 20, w: 860, h: 260}, 22, 42);
+    drawBlowingSand(300, 160);
+    drawCloudShadows(290, 180);
+    drawHeatShimmer(250, 50);
+    drawWaveBreak(200, 290, 60, 0);
+    drawWaveBreak(500, 292, 50, 1.2);
+    drawWaveBreak(750, 288, 55, 2.5);
+    drawLensFlare(780, 30, 0.12);
+    drawBloom(780, 30, 60, 'rgba(255,250,200,0.08)', 0.08);
+  } else if (type === 'outdoor') {
     drawFloatingParticles({x: 50, y: 20, w: 860, h: 350}, 18, 42);
-  }
-  if (type === 'indoor') {
-    drawFloatingParticles({x: 100, y: 50, w: 760, h: 300}, 12, 17);
-  }
-
-  // Subtle animated light flicker for indoor scenes
-  if (type === 'indoor') {
+    if (room === 'town') {
+      drawFallingLeaves({x: 0, y: 0, w: 960, h: 400}, 10);
+      drawCloudShadows(350, 130);
+    } else if (room === 'villa') {
+      drawFloatingParticles({x: 200, y: 100, w: 560, h: 250}, 10, 99);
+      drawGrassBlades(100, 420, 300, 30);
+      drawGrassBlades(600, 425, 250, 25);
+    } else if (room === 'pool') {
+      drawSeaSpray(200, 340, 560, 40, 0.3);
+    } else if (room === 'lighthouse') {
+      drawMist(0, 250, 960, 230, 'rgba(180,200,220,', 10);
+      drawSeaSpray(0, 310, 400, 60, 1.2);
+      drawSeaSpray(600, 310, 360, 50, 0.8);
+      drawStarField(60, 0.4);
+      drawAuroraGlow(10, 80);
+    } else if (room === 'cove') {
+      drawMist(0, 300, 960, 180, 'rgba(160,140,180,', 8);
+      drawAuroraGlow(0, 100);
+    }
+  } else if (type === 'indoor') {
+    drawFloatingParticles({x: 100, y: 50, w: 760, h: 300}, 14, 17);
     const flicker = 0.02 + Math.sin(t * 2.5) * 0.008 + Math.sin(t * 7.3) * 0.004;
     ctx.fillStyle = `rgba(255,240,200,${flicker})`;
     ctx.fillRect(0, 0, 960, 480);
+    if (room === 'hotel') {
+      drawBloom(480, 30, 150, 'rgba(255,240,200,0.03)', 0.03);
+    } else if (room === 'tikibar') {
+      drawSmokeWisps(100, 95, 5, 'rgba(200,180,150,');
+      drawSmokeWisps(860, 95, 5, 'rgba(200,180,150,');
+      drawEmbers(100, 100, 6);
+      drawEmbers(860, 100, 6);
+    } else if (room === 'arcade') {
+      // Neon floor reflection
+      ctx.save();
+      ctx.globalAlpha = 0.03;
+      const nFloor = ctx.createLinearGradient(0, 380, 0, 480);
+      nFloor.addColorStop(0, '#ff00cc');
+      nFloor.addColorStop(1, 'rgba(255,0,200,0)');
+      ctx.fillStyle = nFloor;
+      ctx.fillRect(50, 380, 400, 100);
+      ctx.restore();
+    }
   }
 
-  // Cinematic vignette
-  const vignette = ctx.createRadialGradient(480, 240, 120, 480, 240, 530);
+  // ── Per-room color grading ──
+  const grading = {
+    beach:      ['rgba(255,240,200,0.04)', 'rgba(100,180,255,0.02)'],
+    hotel:      ['rgba(255,220,180,0.05)', 'rgba(180,140,100,0.02)'],
+    tikibar:    ['rgba(255,200,120,0.06)', 'rgba(200,100,50,0.02)'],
+    pool:       ['rgba(200,240,255,0.04)', 'rgba(100,200,255,0.02)'],
+    town:       ['rgba(255,235,200,0.04)', 'rgba(150,200,100,0.01)'],
+    cove:       ['rgba(255,150,100,0.06)', 'rgba(100,50,150,0.03)'],
+    room7:      ['rgba(255,230,200,0.04)', 'rgba(200,150,100,0.02)'],
+    villa:      ['rgba(255,220,200,0.05)', 'rgba(200,150,100,0.02)'],
+    arcade:     ['rgba(200,100,255,0.03)', 'rgba(50,0,100,0.02)'],
+    lighthouse: ['rgba(255,180,100,0.06)', 'rgba(255,100,50,0.02)']
+  };
+  const grade = grading[room] || grading.beach;
+  ctx.fillStyle = grade[0];
+  ctx.fillRect(0, 0, 960, 480);
+  ctx.fillStyle = grade[1];
+  ctx.fillRect(0, 0, 960, 480);
+
+  // ── Cinematic vignette (stronger, shaped per mood) ──
+  const isDark = room === 'cove' || room === 'lighthouse' || room === 'arcade';
+  const vigStr = isDark ? 0.3 : 0.2;
+  const vignette = ctx.createRadialGradient(480, 240, 100, 480, 240, 520);
   vignette.addColorStop(0, 'rgba(0,0,0,0)');
-  vignette.addColorStop(0.6, 'rgba(0,0,0,0)');
-  vignette.addColorStop(0.85, 'rgba(0,0,0,0.08)');
-  vignette.addColorStop(1, 'rgba(0,0,0,0.2)');
+  vignette.addColorStop(0.55, 'rgba(0,0,0,0)');
+  vignette.addColorStop(0.8, `rgba(0,0,0,${vigStr * 0.4})`);
+  vignette.addColorStop(1, `rgba(0,0,0,${vigStr})`);
   ctx.fillStyle = vignette;
   ctx.fillRect(0, 0, 960, 480);
 
-  // Warm tropical overlay
+  // ── Warm tropical overlay ──
   if (type === 'outdoor' || type === 'beach') {
     ctx.fillStyle = 'rgba(255,230,180,0.03)';
     ctx.fillRect(0, 0, 960, 480);
   }
 
-  // Subtle film grain (very light, animated)
+  // ── Animated film grain ──
   ctx.save();
-  ctx.globalAlpha = 0.015;
-  const grainSeed = Math.floor(t * 8);
-  for (let gi = 0; gi < 60; gi++) {
+  ctx.globalAlpha = 0.018;
+  const grainSeed = Math.floor(t * 10);
+  for (let gi = 0; gi < 80; gi++) {
     const gx = ((gi * 347 + grainSeed * 91) % 960);
     const gy = ((gi * 223 + grainSeed * 67) % 480);
-    ctx.fillStyle = gi % 2 === 0 ? '#ffffff' : '#000000';
-    ctx.fillRect(gx, gy, 2, 2);
+    ctx.fillStyle = gi % 3 === 0 ? '#ffffff' : gi % 3 === 1 ? '#000000' : '#888888';
+    ctx.fillRect(gx, gy, 1 + (gi % 2), 1 + (gi % 2));
   }
   ctx.restore();
 }
@@ -2353,6 +2692,8 @@ function drawBeach() {
   // Atmospheric haze near horizon
   ctx.fillStyle = 'rgba(200,230,240,0.08)';
   ctx.fillRect(0, 160, 960, 40);
+
+  enhanceScene('beach');
 }
 
 function drawPalmTree(x, top, scale) {
@@ -2423,8 +2764,6 @@ function drawPalmTree(x, top, scale) {
   });
 
   ctx.restore();
-
-  enhanceScene('beach');
 }
 
 function drawDaphne(x, y) {
@@ -5185,6 +5524,8 @@ function drawTown() {
   // Pole cap
   ctx.fillStyle = '#ddbb44';
   ctx.beginPath(); ctx.arc(549, 62, 3, 0, Math.PI*2); ctx.fill();
+
+  enhanceScene('outdoor');
 }
 
 // ─── DRAWING: SECRET COVE ────────────────────────────────────────
@@ -5258,17 +5599,11 @@ function drawCove() {
   ctx.lineWidth = 3;
   ctx.beginPath(); ctx.arc(480, 185, 57, 0, Math.PI*2); ctx.stroke();
 
-  // Lens flare streaks
-  ctx.strokeStyle = 'rgba(255,255,200,0.15)';
-  ctx.lineWidth = 2;
-  [[430,150,350,100],[530,150,610,100],[460,170,380,140],[500,170,580,140]].forEach(([x1,y1,x2,y2]) => {
-    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
-  });
-  // Small lens flare dots
-  ctx.fillStyle = 'rgba(255,220,150,0.3)';
-  [[380,140,8],[560,145,6],[420,165,4],[540,155,5]].forEach(([fx,fy,fr]) => {
-    ctx.beginPath(); ctx.arc(fx,fy,fr,0,Math.PI*2); ctx.fill();
-  });
+  // Animated lens flare
+  drawLensFlare(480, 185, 0.18);
+
+  // Stars emerging in upper sky
+  drawStarField(35, 0.3);
 
   // === OCEAN with sunset reflection ===
   const ocean = ctx.createLinearGradient(0, 190, 0, 310);
@@ -5660,6 +5995,8 @@ function drawCove() {
   vigR.addColorStop(1, 'rgba(40,20,30,0)');
   ctx.fillStyle = vigR;
   ctx.fillRect(760, 0, 200, 480);
+
+  enhanceScene('outdoor');
 }
 
 // ─── DRAWING: ROOM 7 ────────────────────────────────────────────
