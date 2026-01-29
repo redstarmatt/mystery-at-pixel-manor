@@ -2812,6 +2812,20 @@ function drawBeach() {
   ctx.fillStyle = 'rgba(200,230,240,0.08)';
   ctx.fillRect(0, 160, 960, 40);
 
+  // Salt crystal sparkles in sea air
+  const _beachSaltT = window._t || 0;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  for (let sc = 0; sc < 10; sc++) {
+    const _scPhase = (_beachSaltT * 0.2 + sc * 0.9) % 4.0;
+    const _scX = (sc * 97 + 50) % 920 + Math.sin(_beachSaltT * 0.4 + sc * 1.5) * 15;
+    const _scY = 100 + _scPhase * 60 + Math.sin(_beachSaltT * 0.7 + sc * 2.1) * 20;
+    const _scAlpha = Math.max(0, 0.15 - Math.abs(_scPhase - 2) * 0.06);
+    ctx.fillStyle = `rgba(255,255,240,${_scAlpha})`;
+    ctx.beginPath(); ctx.arc(_scX, _scY, 0.8 + Math.sin(_beachSaltT * 3 + sc) * 0.3, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.restore();
+
   enhanceScene('beach');
 }
 
@@ -4296,6 +4310,20 @@ function drawHotel() {
   ctx.fillStyle = ambientGlow;
   ctx.fillRect(0, 0, 960, 480);
 
+  // Floating dust motes in warm hotel light
+  const _htlDustT = window._t || 0;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  for (let hd = 0; hd < 8; hd++) {
+    const _hdPhase = (_htlDustT * 0.1 + hd * 0.8) % 6.0;
+    const _hdX = 350 + (hd * 43) % 260 + Math.sin(_htlDustT * 0.3 + hd * 1.7) * 25;
+    const _hdY = 30 + _hdPhase * 60;
+    const _hdAlpha = Math.max(0, 0.08 - Math.abs(_hdPhase - 3) * 0.02);
+    ctx.fillStyle = `rgba(255,240,200,${_hdAlpha})`;
+    ctx.beginPath(); ctx.arc(_hdX, _hdY, 0.8 + Math.sin(_htlDustT * 2 + hd) * 0.2, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.restore();
+
   enhanceScene('indoor');
 }
 
@@ -5103,6 +5131,23 @@ function drawTikiBar() {
   ctx.globalCompositeOperation = 'overlay';
   ctx.fillStyle = 'rgba(255,200,120,0.04)';
   ctx.fillRect(0, 0, 960, 480);
+  ctx.restore();
+
+  // Enhanced smoke wisps from tiki torches
+  const _tikiSmokeT = window._t || 0;
+  ctx.save();
+  ctx.globalAlpha = 0.06;
+  [210, 760].forEach((sx, si) => {
+    for (let sw = 0; sw < 4; sw++) {
+      const _swPhase = (_tikiSmokeT * 0.3 + sw * 0.8 + si * 2.0) % 3.5;
+      const _swX = sx + Math.sin(_tikiSmokeT * 0.5 + sw * 1.5 + si * 3) * 12;
+      const _swY = 100 - _swPhase * 30;
+      const _swAlpha = Math.max(0, 0.8 - _swPhase * 0.22);
+      const _swSize = 3 + _swPhase * 2;
+      ctx.fillStyle = `rgba(200,190,170,${_swAlpha})`;
+      ctx.beginPath(); ctx.ellipse(_swX, _swY, _swSize, _swSize * 0.6, 0, 0, Math.PI*2); ctx.fill();
+    }
+  });
   ctx.restore();
 
   enhanceScene('indoor');
@@ -6082,6 +6127,19 @@ function drawTown() {
   ctx.fillStyle = '#ddbb44';
   ctx.beginPath(); ctx.arc(549, 62, 3, 0, Math.PI*2); ctx.fill();
 
+  // Pollen floating in warm air
+  const _townPollenT = window._t || 0;
+  ctx.save();
+  for (let pl = 0; pl < 6; pl++) {
+    const _plPhase = (_townPollenT * 0.15 + pl * 1.1) % 5.0;
+    const _plX = (pl * 157 + 80) % 900 + Math.sin(_townPollenT * 0.3 + pl * 2.0) * 20;
+    const _plY = 80 + _plPhase * 50 + Math.sin(_townPollenT * 0.5 + pl * 1.6) * 15;
+    const _plAlpha = Math.max(0.02, 0.08 - Math.abs(_plPhase - 2.5) * 0.025);
+    ctx.fillStyle = `rgba(240,220,150,${_plAlpha})`;
+    ctx.beginPath(); ctx.arc(_plX, _plY, 1.2, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.restore();
+
   enhanceScene('outdoor');
 }
 
@@ -6682,6 +6740,20 @@ function drawCove() {
   ctx.globalCompositeOperation = 'overlay';
   ctx.fillStyle = 'rgba(255,160,80,0.03)';
   ctx.fillRect(0, 0, 960, 480);
+  ctx.restore();
+
+  // Sea spray catching sunset light
+  const _coveSprayT = window._t || 0;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  for (let ss = 0; ss < 8; ss++) {
+    const _ssPhase = (_coveSprayT * 0.4 + ss * 0.7) % 2.5;
+    const _ssX = 200 + (ss * 113) % 560 + Math.sin(_coveSprayT * 0.6 + ss * 1.8) * 10;
+    const _ssY = 280 - _ssPhase * 30 + Math.cos(_coveSprayT * 0.9 + ss * 1.3) * 5;
+    const _ssAlpha = Math.max(0, 0.12 - _ssPhase * 0.04);
+    ctx.fillStyle = `rgba(255,220,180,${_ssAlpha})`;
+    ctx.beginPath(); ctx.arc(_ssX, _ssY, 1 + _ssPhase * 0.3, 0, Math.PI*2); ctx.fill();
+  }
   ctx.restore();
 
   enhanceScene('outdoor');
@@ -7401,6 +7473,20 @@ function drawRoom7() {
   ctx.fillStyle = ambG;
   ctx.fillRect(0, 0, 960, 480);
 
+  // Dust motes in sunbeam from window
+  const _r7DustT = window._t || 0;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  for (let rd = 0; rd < 6; rd++) {
+    const _rdPhase = (_r7DustT * 0.12 + rd * 0.9) % 4.0;
+    const _rdX = 380 + Math.sin(_r7DustT * 0.4 + rd * 2.0) * 40 + rd * 10;
+    const _rdY = 80 + _rdPhase * 60 + Math.sin(_r7DustT * 0.6 + rd * 1.5) * 10;
+    const _rdAlpha = Math.max(0, 0.1 - Math.abs(_rdPhase - 2) * 0.04);
+    ctx.fillStyle = `rgba(255,240,210,${_rdAlpha})`;
+    ctx.beginPath(); ctx.arc(_rdX, _rdY, 0.7 + Math.sin(_r7DustT * 2.5 + rd) * 0.2, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.restore();
+
   enhanceScene('outdoor');
 }
 
@@ -8077,6 +8163,22 @@ function drawPool() {
   sunG.addColorStop(1, 'rgba(0,0,0,0)');
   ctx.fillStyle = sunG;
   ctx.fillRect(0, 0, 960, 480);
+
+  // Heat shimmer above pool surface
+  const _poolHeatT = window._t || 0;
+  ctx.save();
+  ctx.globalAlpha = 0.03;
+  for (let hs = 0; hs < 5; hs++) {
+    const _hsY = 200 + hs * 3;
+    ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let hx = 210; hx < 745; hx += 4) {
+      ctx.lineTo(hx, _hsY + Math.sin(hx * 0.05 + _poolHeatT * 1.5 + hs * 1.2) * 1.5);
+    }
+    ctx.stroke();
+  }
+  ctx.restore();
 
   enhanceScene('outdoor');
 }
@@ -8975,6 +9077,28 @@ function drawVilla() {
   ctx.fillRect(0, 0, 960, 480);
   ctx.restore();
 
+  ctx.restore();
+
+  // Butterflies in garden
+  const _vilButtT = window._t || 0;
+  ctx.save();
+  for (let bf = 0; bf < 3; bf++) {
+    const _bfX = 750 + Math.sin(_vilButtT * 0.4 + bf * 2.5) * 60 + bf * 30;
+    const _bfY = 300 + Math.sin(_vilButtT * 0.6 + bf * 1.8) * 25;
+    const _wingFlap = Math.sin(_vilButtT * 8 + bf * 3) * 0.6;
+    const _bfColors = ['#ff8844','#dd44aa','#ffcc22'];
+    ctx.fillStyle = _bfColors[bf];
+    ctx.save();
+    ctx.translate(_bfX, _bfY);
+    // Left wing
+    ctx.beginPath(); ctx.ellipse(-2, 0, 3, 2 * Math.abs(_wingFlap), 0, 0, Math.PI*2); ctx.fill();
+    // Right wing
+    ctx.beginPath(); ctx.ellipse(2, 0, 3, 2 * Math.abs(_wingFlap), 0, 0, Math.PI*2); ctx.fill();
+    // Body
+    ctx.fillStyle = '#333';
+    ctx.fillRect(-0.5, -2, 1, 4);
+    ctx.restore();
+  }
   ctx.restore();
 
   enhanceScene('outdoor');
@@ -10657,6 +10781,21 @@ function drawArcade() {
 
   ctx.restore();
 
+  // Floating haze particles in neon light
+  const _arcHazeT = window._t || 0;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  for (let ah = 0; ah < 6; ah++) {
+    const _ahPhase = (_arcHazeT * 0.08 + ah * 1.0) % 5.0;
+    const _ahX = 200 + (ah * 127) % 560 + Math.sin(_arcHazeT * 0.2 + ah * 2.3) * 30;
+    const _ahY = 50 + _ahPhase * 70;
+    const _ahAlpha = Math.max(0, 0.04 - Math.abs(_ahPhase - 2.5) * 0.012);
+    const _ahHue = (ah * 60 + _arcHazeT * 10) % 360;
+    ctx.fillStyle = `hsla(${_ahHue},70%,60%,${_ahAlpha})`;
+    ctx.beginPath(); ctx.arc(_ahX, _ahY, 2 + Math.sin(_arcHazeT + ah) * 0.5, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.restore();
+
   enhanceScene('indoor');
 }
 
@@ -11960,6 +12099,35 @@ function drawLighthouse() {
   ctx.globalCompositeOperation = 'overlay';
   ctx.fillStyle = 'rgba(255,140,60,0.04)';
   ctx.fillRect(0, 0, 960, 480);
+  ctx.restore();
+
+  // Wind-blown sea spray
+  const _lhSprayT = window._t || 0;
+  ctx.save();
+  ctx.globalAlpha = 0.08;
+  for (let ws = 0; ws < 10; ws++) {
+    const _wsPhase = (_lhSprayT * 0.6 + ws * 0.5) % 2.0;
+    const _wsX = (ws * 103 + _lhSprayT * 20) % 960;
+    const _wsY = 280 + Math.sin(_lhSprayT * 1.2 + ws * 2) * 8 + ws * 3;
+    const _wsAlpha = Math.max(0, 0.6 - _wsPhase * 0.3);
+    ctx.fillStyle = `rgba(255,255,255,${_wsAlpha})`;
+    ctx.beginPath(); ctx.arc(_wsX, _wsY, 1.5, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.restore();
+  // Distant circling seabirds
+  ctx.save();
+  ctx.strokeStyle = 'rgba(40,20,20,0.15)';
+  ctx.lineWidth = 0.8;
+  for (let sb = 0; sb < 3; sb++) {
+    const _sbAngle = _lhSprayT * 0.2 + sb * 2.1;
+    const _sbX = 400 + Math.cos(_sbAngle) * (80 + sb * 30);
+    const _sbY = 60 + Math.sin(_sbAngle * 0.7) * 15 + sb * 12;
+    const _wingPhase = Math.sin(_lhSprayT * 4 + sb * 2) * 3;
+    ctx.beginPath();
+    ctx.moveTo(_sbX - 4, _sbY + _wingPhase);
+    ctx.quadraticCurveTo(_sbX, _sbY - 1, _sbX + 4, _sbY + _wingPhase);
+    ctx.stroke();
+  }
   ctx.restore();
 
   enhanceScene('outdoor');
