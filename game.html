@@ -2907,6 +2907,11 @@ function drawDaphne(x, y) {
   y += _breathe;
   // Hair flutter
   const _hairWind = Math.sin(_dt * 1.2) * 1.5 + Math.sin(_dt * 2.7) * 0.8;
+  // Canvas drop shadow
+  ctx.shadowColor = 'rgba(0,0,0,0.12)';
+  ctx.shadowBlur = 5;
+  ctx.shadowOffsetX = 2;
+  ctx.shadowOffsetY = 3;
   // === SUNDRESS with flowing shape and rich detail ===
   // (rewritten)
   ctx.fillStyle = '#ffffff';
@@ -2951,6 +2956,8 @@ function drawDaphne(x, y) {
   // Head
   ctx.fillStyle = '#f5c6a0';
   ctx.beginPath(); ctx.arc(x, y, 16, 0, Math.PI*2); ctx.fill();
+  // Reset shadow before face details
+  ctx.shadowBlur = 0; ctx.shadowColor = 'transparent';
   // Cheek blush
   ctx.fillStyle = 'rgba(240,140,140,0.25)';
   ctx.beginPath(); ctx.arc(x-9, y+4, 5, 0, Math.PI*2); ctx.fill();
@@ -3060,6 +3067,11 @@ function drawBro(x, y, color) {
   // Breathing animation
   const _bt = window._t || 0;
   y += Math.sin(_bt * 1.5 + x * 0.05) * 0.8;
+  // Canvas drop shadow
+  ctx.shadowColor = 'rgba(0,0,0,0.12)';
+  ctx.shadowBlur = 4;
+  ctx.shadowOffsetX = 2;
+  ctx.shadowOffsetY = 3;
 
   // Compute color variants
   const darker = color.replace(/[0-9a-f]{2}/gi, (m) => Math.max(0, parseInt(m,16)-35).toString(16).padStart(2,'0'));
@@ -3243,6 +3255,8 @@ function drawBro(x, y, color) {
   ctx.fillStyle = '#C0A030';
   ctx.fillRect(x-2, y+54, 4, 4);
 
+  // Reset shadow before face details
+  ctx.shadowBlur = 0; ctx.shadowColor = 'transparent';
   // === HEAD — slightly large, bro proportions ===
   const headGrad = ctx.createRadialGradient(x+2, y+5, 2, x, y+8, 15);
   headGrad.addColorStop(0, '#f0c8a0');
@@ -8220,6 +8234,11 @@ function drawPool() {
 function drawNonnaRosa(x, y) {
   ctx.save();
   y += Math.sin((window._t||0) * 1.3) * 0.7;
+  // Canvas drop shadow
+  ctx.shadowColor = 'rgba(0,0,0,0.15)';
+  ctx.shadowBlur = 4;
+  ctx.shadowOffsetX = 2;
+  ctx.shadowOffsetY = 3;
 
   // ── WARM AMBIENT GLOW ──
   const _nrGlow = ctx.createRadialGradient(x, y + 30, 10, x, y + 30, 80);
@@ -8519,6 +8538,8 @@ function drawNonnaRosa(x, y) {
   ctx.beginPath(); ctx.ellipse(x - 7, y - 13, 2.5, 1.5, -0.3, 0, Math.PI * 2); ctx.fill();
   ctx.beginPath(); ctx.ellipse(x + 5, y - 13, 2.5, 1.5, -0.3, 0, Math.PI * 2); ctx.fill();
 
+  // Reset shadow before face details
+  ctx.shadowBlur = 0; ctx.shadowColor = 'transparent';
   // ── Eyes — dark, warm, fierce (animated blink) ──
   const _nonnaBlink = ((window._t||0) * 0.28 + 3.0) % 6;
   if (_nonnaBlink > 5.88) {
@@ -9150,6 +9171,11 @@ function drawVilla() {
 function drawDJKev(x, y) {
   ctx.save();
   y += Math.sin((window._t||0) * 1.6 + 1.0) * 0.7;
+  // Canvas drop shadow
+  ctx.shadowColor = 'rgba(0,0,0,0.15)';
+  ctx.shadowBlur = 4;
+  ctx.shadowOffsetX = 2;
+  ctx.shadowOffsetY = 3;
 
   // ── Ground shadow ──
   ctx.save();
@@ -9526,6 +9552,8 @@ function drawDJKev(x, y) {
   ctx.beginPath(); ctx.arc(x+5, y-13, 3, Math.PI+0.5, Math.PI+1.8); ctx.stroke();
   ctx.restore();
 
+  // Reset shadow before face details
+  ctx.shadowBlur = 0; ctx.shadowColor = 'transparent';
   // ── Eyes ──
   ctx.fillStyle = '#f5f0e8';
   ctx.beginPath(); ctx.ellipse(x-6, y-2, 5, 3.5, 0, 0, Math.PI*2); ctx.fill();
@@ -10863,7 +10891,13 @@ function drawArcade() {
 
 // ─── DRAWING: LIGHTHOUSE ────────────────────────────────────────
 function drawCaptainPete(x, y) {
+  ctx.save();
   y += Math.sin((window._t||0) * 1.4 + 2.0) * 0.6;
+  // Canvas drop shadow
+  ctx.shadowColor = 'rgba(0,0,0,0.15)';
+  ctx.shadowBlur = 4;
+  ctx.shadowOffsetX = 2;
+  ctx.shadowOffsetY = 3;
   // Ground shadow
   drawGroundShadow(x, y+103, 40);
 
@@ -11157,6 +11191,8 @@ function drawCaptainPete(x, y) {
   ctx.beginPath(); ctx.moveTo(x-5, y+1); ctx.quadraticCurveTo(x-8, y+6, x-8, y+10); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(x+5, y+1); ctx.quadraticCurveTo(x+8, y+6, x+8, y+10); ctx.stroke();
 
+  // Reset shadow before face details
+  ctx.shadowBlur = 0; ctx.shadowColor = 'transparent';
   // Kind watery blue eyes (animated blink — slow, weary)
   const _peteBlink = ((window._t||0) * 0.22 + 4.0) % 7;
   if (_peteBlink > 6.88) {
@@ -11321,6 +11357,7 @@ function drawCaptainPete(x, y) {
   ctx.lineWidth = 0.8;
   ctx.beginPath(); ctx.arc(x-6, y-15, 4, -0.5, 1); ctx.stroke();
   ctx.beginPath(); ctx.arc(x+6, y-15, 4, 2.1, 3.6); ctx.stroke();
+  ctx.restore();
 }
 
 function drawLighthouse() {
