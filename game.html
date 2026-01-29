@@ -4324,6 +4324,21 @@ function drawHotel() {
   }
   ctx.restore();
 
+  // Chandelier prismatic rainbow flecks
+  const _htlPrismT = window._t || 0;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  for (let pr = 0; pr < 5; pr++) {
+    const _prPhase = (_htlPrismT * 0.15 + pr * 1.2) % 4.0;
+    const _prX = 300 + (pr * 87) % 360;
+    const _prY = 80 + (pr * 53) % 200 + Math.sin(_htlPrismT * 0.3 + pr * 1.5) * 10;
+    const _prHue = (pr * 72 + _htlPrismT * 15) % 360;
+    const _prAlpha = Math.max(0, 0.04 - Math.abs(_prPhase - 2) * 0.015);
+    ctx.fillStyle = `hsla(${_prHue},90%,70%,${_prAlpha})`;
+    ctx.beginPath(); ctx.ellipse(_prX, _prY, 4, 2, pr * 0.5, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.restore();
+
   enhanceScene('indoor');
 }
 
@@ -5148,6 +5163,15 @@ function drawTikiBar() {
       ctx.beginPath(); ctx.ellipse(_swX, _swY, _swSize, _swSize * 0.6, 0, 0, Math.PI*2); ctx.fill();
     }
   });
+  ctx.restore();
+
+  // Flickering torch light shadow dance on walls
+  const _tikiFlickT = window._t || 0;
+  ctx.save();
+  ctx.globalCompositeOperation = 'multiply';
+  const _flkIntensity = 0.92 + 0.08 * Math.sin(_tikiFlickT * 5.5) + 0.04 * Math.sin(_tikiFlickT * 11.3);
+  ctx.fillStyle = `rgba(255,240,200,${_flkIntensity})`;
+  ctx.fillRect(0, 82, 960, 398);
   ctx.restore();
 
   enhanceScene('indoor');
@@ -7487,6 +7511,15 @@ function drawRoom7() {
   }
   ctx.restore();
 
+  // Subtle ambient light warmth shift
+  const _r7AmbT = window._t || 0;
+  ctx.save();
+  ctx.globalCompositeOperation = 'overlay';
+  const _warmShift = 0.015 + 0.005 * Math.sin(_r7AmbT * 0.1);
+  ctx.fillStyle = `rgba(255,220,180,${_warmShift})`;
+  ctx.fillRect(0, 0, 960, 480);
+  ctx.restore();
+
   enhanceScene('outdoor');
 }
 
@@ -9099,6 +9132,15 @@ function drawVilla() {
     ctx.fillRect(-0.5, -2, 1, 4);
     ctx.restore();
   }
+  ctx.restore();
+
+  // Sunlight through clouds — brightness variation
+  const _vilSunT = window._t || 0;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  const _cloudDim = 0.02 + 0.01 * Math.sin(_vilSunT * 0.08) + 0.005 * Math.sin(_vilSunT * 0.2);
+  ctx.fillStyle = `rgba(255,250,230,${_cloudDim})`;
+  ctx.fillRect(0, 0, 960, 340);
   ctx.restore();
 
   enhanceScene('outdoor');
@@ -10796,6 +10838,25 @@ function drawArcade() {
   }
   ctx.restore();
 
+  // Neon colors reflecting on nearby surfaces
+  const _arcNeonRefT = window._t || 0;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  const _neonCycle = _arcNeonRefT * 0.5;
+  // Pink neon reflection on left wall
+  const _pinkPulse = 0.015 + 0.008 * Math.sin(_neonCycle * 2);
+  ctx.fillStyle = `rgba(255,50,200,${_pinkPulse})`;
+  ctx.fillRect(0, 100, 150, 300);
+  // Blue neon reflection on right wall
+  const _bluePulse = 0.012 + 0.006 * Math.sin(_neonCycle * 2.3 + 1);
+  ctx.fillStyle = `rgba(50,150,255,${_bluePulse})`;
+  ctx.fillRect(810, 100, 150, 300);
+  // Floor reflection color sweep
+  const _floorHue = (_arcNeonRefT * 20) % 360;
+  ctx.fillStyle = `hsla(${_floorHue},80%,50%,0.008)`;
+  ctx.fillRect(0, 400, 960, 80);
+  ctx.restore();
+
   enhanceScene('indoor');
 }
 
@@ -12127,6 +12188,21 @@ function drawLighthouse() {
     ctx.moveTo(_sbX - 4, _sbY + _wingPhase);
     ctx.quadraticCurveTo(_sbX, _sbY - 1, _sbX + 4, _sbY + _wingPhase);
     ctx.stroke();
+  }
+  ctx.restore();
+
+  // Rotating beam light sweep across scene
+  const _lhSweepT = window._t || 0;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  const _sweepAngle = _lhSweepT * 0.3;
+  const _sweepX = 280 + Math.cos(_sweepAngle) * 400;
+  if (_sweepX > 0 && _sweepX < 960) {
+    const _sweepGrad = ctx.createRadialGradient(_sweepX, 200, 5, _sweepX, 300, 200);
+    _sweepGrad.addColorStop(0, 'rgba(255,250,220,0.04)');
+    _sweepGrad.addColorStop(1, 'rgba(255,240,200,0)');
+    ctx.fillStyle = _sweepGrad;
+    ctx.fillRect(0, 100, 960, 300);
   }
   ctx.restore();
 
